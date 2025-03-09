@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    {% block content %}{% endblock %}
+
+    <!-- Check if there are messages to display -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message  in messages %}
+        <!-- Create a pop-up div with dynamic styling for the button -->
+        <div class="popup open-popup">
+            
+            {% if category == 'success' %}
+                <!-- Positive pop-up styling for success messages -->
+                <img src="{{ url_for('static', filename='images/tick.png') }}" alt="tick-image">
+                <h2>Thank You</h2>
+                <!-- Set green color for success button -->
+                <p>{{ message }}</p>
+                <button type="button" onclick="closePopup()" style="background-color: green;">OK</button>
+            {% else %}
+                <!-- Negative pop-up styling for other messages -->
+                <img src="{{ url_for('static', filename='images/cross.png') }}" alt="cross-image">
+                <h2>Oops!</h2>
+                <!-- Set red color for error button -->
+                <p>{{ message }}</p>
+                <button type="button" onclick="closePopup()" style="background-color: red;">OK</button>
+            {% endif %}
+            
+        </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+ <!-- JavaScript for Mobile Menu Toggle -->
+ <script>
+    $(document).ready(function () {
+        $(".toggle").on("click", function () {
+            $(".menu").toggleClass("active");
+            var icon = $(".menu").hasClass("active") ? 'close-outline' : 'menu-outline';
+            $(this).find("a").html("<ion-icon name='" + icon + "'></ion-icon>");
+        });
+    });
+</script>
+<script>
+    function closePopup() {
+        console.log('Closing popup');
+        var popup = document.querySelector('.popup');
+        popup.classList.remove('open-popup');
+    }
+    
+</script>
+</body>
+</html>

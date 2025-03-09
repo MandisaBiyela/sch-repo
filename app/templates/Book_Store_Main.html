@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+
+{% block title %}Bookstore{% endblock %}
+
+{% block content %}
+<div id="app">
+    <!-- Header -->
+    <header class="bg-white shadow">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex justify-between items-center">
+          <h1 class="text-2xl font-bold text-gray-800">Bookstore</h1>
+          <div class="flex items-center space-x-6">
+            <div class="relative cart-icon cursor-pointer">
+              <i class="fas fa-shopping-cart text-gray-700 text-xl"></i>
+              <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                3
+              </span>
+            </div>
+            <div class="relative user-menu-icon cursor-pointer">
+              <i class="fas fa-user text-gray-700 text-xl"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filters and Search -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between bg-white p-4 rounded-lg shadow">
+        <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 mb-4 md:mb-0">
+          <div>
+            <label for="bookType" class="block text-sm font-medium text-gray-700">Book Type</label>
+            <select id="bookType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md">
+              <option value="all">All Types</option>
+              <option value="physical">Physical</option>
+              <option value="pdf">PDF</option>
+            </select>
+          </div>
+          <div>
+            <label for="bookCondition" class="block text-sm font-medium text-gray-700">Condition</label>
+            <select id="bookCondition" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md">
+              <option value="all">All Conditions</option>
+              <option value="new">New</option>
+              <option value="used">Used</option>
+            </select>
+          </div>
+        </div>
+        <div class="relative flex-1 max-w-md">
+          <input type="text" id="searchInput" placeholder="Search books..." 
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fas fa-search text-gray-400"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Book Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Book 1 -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="relative pb-1/2">
+            <img src="/api/placeholder/300/400" alt="Book cover" class="h-64 w-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-gray-900">The Great Gatsby</h3>
+              <div class="flex space-x-2">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  New
+                </span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  Physical
+                </span>
+              </div>
+            </div>
+            <p class="mt-1 text-sm text-gray-600">F. Scott Fitzgerald</p>
+            <div class="mt-4 flex justify-between items-center">
+              <p class="text-lg font-medium text-gray-900">$12.99</p>
+              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book 2 -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="relative pb-1/2">
+            <img src="/api/placeholder/300/400" alt="Book cover" class="h-64 w-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-gray-900">To Kill a Mockingbird</h3>
+              <div class="flex space-x-2">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  Used
+                </span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  Physical
+                </span>
+              </div>
+            </div>
+            <p class="mt-1 text-sm text-gray-600">Harper Lee</p>
+            <div class="mt-4 flex justify-between items-center">
+              <p class="text-lg font-medium text-gray-900">$10.99</p>
+              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book 3 -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="relative pb-1/2">
+            <img src="/api/placeholder/300/400" alt="Book cover" class="h-64 w-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-gray-900">1984</h3>
+              <div class="flex space-x-2">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  New
+                </span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  PDF
+                </span>
+              </div>
+            </div>
+            <p class="mt-1 text-sm text-gray-600">George Orwell</p>
+            <div class="mt-4 flex justify-between items-center">
+              <p class="text-lg font-medium text-gray-900">$8.99</p>
+              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book 4 -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="relative pb-1/2">
+            <img src="/api/placeholder/300/400" alt="Book cover" class="h-64 w-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-gray-900">Pride and Prejudice</h3>
+              <div class="flex space-x-2">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  Used
+                </span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  PDF
+                </span>
+              </div>
+            </div>
+            <p class="mt-1 text-sm text-gray-600">Jane Austen</p>
+            <div class="mt-4 flex justify-between items-center">
+              <p class="text-lg font-medium text-gray-900">$7.99</p>
+              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-0 overflow-hidden z-20" style="display: none;">
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity overlay-close"></div>
+        <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+          <div class="w-screen max-w-md">
+            <div class="h-full flex flex-col bg-white shadow-xl">
+              <div class="flex-1 py-6 overflow-y-auto px-4 sm:px-6">
+                <div class="flex items-start justify-between">
+                  <h2 class="text-lg font-medium text-gray-900">Shopping cart</h2>
+                  <div class="ml-3 h-7 flex items-center">
+                    <button type="button" class="cart-close -m-2 p-2 text-gray-400 hover:text-gray-500">
+                      <span class="sr-only">Close panel</span>
+                      <i class="fas fa-times text-gray-500"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="mt-8">
+                  <!-- Hardcoded cart items -->
+                  <div class="flow-root">
+                    <ul class="-my-6 divide-y divide-gray-200">
+                      <li class="py-6 flex">
+                        <div class="flex-shrink-0 w-24 h-24 overflow-hidden rounded-md border border-gray-200">
+                          <img src="/api/placeholder/300/400" alt="Book cover" class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-4 flex-1 flex flex-col">
+                          <div>
+                            <div class="flex justify-between text-base font-medium text-gray-900">
+                              <h3>The Great Gatsby</h3>
+                              <p class="ml-4">$12.99</p>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500">F. Scott Fitzgerald</p>
+                          </div>
+                          <div class="flex-1 flex items-end justify-between text-sm">
+                            <p class="text-gray-500">Qty 1</p>
+                            <div class="flex">
+                              <button class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="py-6 flex">
+                        <div class="flex-shrink-0 w-24 h-24 overflow-hidden rounded-md border border-gray-200">
+                          <img src="/api/placeholder/300/400" alt="Book cover" class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-4 flex-1 flex flex-col">
+                          <div>
+                            <div class="flex justify-between text-base font-medium text-gray-900">
+                              <h3>To Kill a Mockingbird</h3>
+                              <p class="ml-4">$10.99</p>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500">Harper Lee</p>
+                          </div>
+                          <div class="flex-1 flex items-end justify-between text-sm">
+                            <p class="text-gray-500">Qty 2</p>
+                            <div class="flex">
+                              <button class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
+                <div class="flex justify-between text-base font-medium text-gray-900">
+                  <p>Subtotal</p>
+                  <p>$34.97</p>
+                </div>
+                <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+                <div class="mt-6">
+                  <a href="/checkout" class="flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                    Checkout
+                  </a>
+                </div>
+                <div class="mt-6 flex justify-center text-sm text-center text-gray-500">
+                  <p>
+                    or <button class="cart-close text-indigo-600 font-medium hover:text-indigo-500">Continue Shopping<span aria-hidden="true"> &rarr;</span></button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Menu Dropdown -->
+    <div id="user-menu" class="origin-top-right absolute right-4 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" style="top: 60px; right: 16px; z-index: 30; display: none;">
+      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Purchases</a>
+      <a href="/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+    </div>
+</div>
+
+<!-- Make sure FontAwesome is included -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Toggle cart visibility
+    $('.cart-icon').click(function(e) {
+      e.stopPropagation();
+      $('#cart-sidebar').toggle();
+      $('#user-menu').hide();
+    });
+    
+    // Close cart when clicking the close button or overlay
+    $('.cart-close, .overlay-close').click(function() {
+      $('#cart-sidebar').hide();
+    });
+    
+    // Toggle user menu
+    $('.user-menu-icon').click(function(e) {
+      e.stopPropagation();
+      $('#user-menu').toggle();
+      $('#cart-sidebar').hide();
+    });
+    
+    // Add to cart functionality (for demo purposes)
+    $('.add-to-cart').click(function() {
+      $('#cart-sidebar').show();
+      // For real implementation, you would add the item to the cart here
+    });
+    
+    // Close menus when clicking outside
+    $(document).click(function(event) {
+      if (!$(event.target).closest('.cart-icon, #cart-sidebar, .user-menu-icon, #user-menu').length) {
+        $('#cart-sidebar').hide();
+        $('#user-menu').hide();
+      }
+    });
+
+    // Prevent closing when clicking inside the cart
+    $('#cart-sidebar .w-screen').click(function(e) {
+      e.stopPropagation();
+    });
+  });
+</script>
+{% endblock %}
