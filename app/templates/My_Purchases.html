@@ -4,28 +4,11 @@
 
 {% block content %}
 <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-bold text-gray-800">Account Summary</h2>
-      <div class="text-green-600 font-bold text-xl">
-        Balance: $27.50
-      </div>
-    </div>
+
     <div class="flex flex-wrap gap-4 text-sm">
       <div class="bg-blue-100 rounded-md p-3 flex-1">
         <p class="font-semibold text-blue-800">Books Purchased</p>
-        <p class="text-2xl font-bold text-blue-900">14</p>
-      </div>
-      <div class="bg-yellow-100 rounded-md p-3 flex-1">
-        <p class="font-semibold text-yellow-800">Currently On Loan</p>
-        <p class="text-2xl font-bold text-yellow-900">3</p>
-      </div>
-      <div class="bg-red-100 rounded-md p-3 flex-1">
-        <p class="font-semibold text-red-800">Overdue Books</p>
-        <p class="text-2xl font-bold text-red-900">1</p>
-      </div>
-      <div class="bg-green-100 rounded-md p-3 flex-1">
-        <p class="font-semibold text-green-800">Store Credit</p>
-        <p class="text-2xl font-bold text-green-900">$27.50</p>
+        <p class="text-2xl font-bold text-blue-900">{{ books_purchased }}</p>
       </div>
     </div>
   </div>
@@ -44,126 +27,26 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
+          {% for purchase in purchases %}
           <tr>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">The Great Gatsby</div>
+              <div class="text-sm font-medium text-gray-900">{{ purchase.book.title }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">F. Scott Fitzgerald</div>
+              <div class="text-sm text-gray-500">{{ purchase.book.author }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Mar 01, 2025</div>
+              <div class="text-sm text-gray-500">{{ purchase.purchase_date.strftime('%b %d, %Y') }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">$12.99</div>
+              <div class="text-sm text-gray-900">${{ purchase.total_price }}</div>
             </td>
           </tr>
-          <tr>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">To Kill a Mockingbird</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Harper Lee</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Feb 15, 2025</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">$14.50</div>
-            </td>
-          </tr>
-          <tr>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">1984</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">George Orwell</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Feb 02, 2025</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">$11.25</div>
-            </td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
-
-  <!-- Books on Loan Section -->
-  <div>
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Books on Loan</h2>
-    <div class="overflow-x-auto bg-white rounded-lg shadow">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loan Date</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">Dune</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Frank Herbert</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Feb 25, 2025</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Mar 25, 2025</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                Current
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">The Hobbit</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">J.R.R. Tolkien</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Feb 18, 2025</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Mar 18, 2025</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                Current
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">Pride and Prejudice</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Jane Austen</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Feb 01, 2025</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">Mar 01, 2025</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                Overdue ($5.00)
-              </span>
-            </td>
-          </tr>
-        </tbody>
       </table>
     </div>
   </div>

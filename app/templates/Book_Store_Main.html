@@ -13,7 +13,7 @@
             <div class="relative cart-icon cursor-pointer">
               <i class="fas fa-shopping-cart text-gray-700 text-xl"></i>
               <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                3
+                {{ session.get('cart_count', 0) }}
               </span>
             </div>
             <div class="relative user-menu-icon cursor-pointer">
@@ -32,136 +32,134 @@
             <label for="bookType" class="block text-sm font-medium text-gray-700">Book Type</label>
             <select id="bookType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md">
               <option value="all">All Types</option>
-              <option value="physical">Physical</option>
-              <option value="pdf">PDF</option>
+              <option value="Physical">Physical</option>
+              <option value="PDF">PDF</option>
             </select>
           </div>
           <div>
             <label for="bookCondition" class="block text-sm font-medium text-gray-700">Condition</label>
             <select id="bookCondition" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md">
               <option value="all">All Conditions</option>
-              <option value="new">New</option>
-              <option value="used">Used</option>
+              <option value="New">New</option>
+              <option value="Second-hand">Used</option>
             </select>
           </div>
         </div>
         <div class="relative flex-1 max-w-md">
-          <input type="text" id="searchInput" placeholder="Search books..." 
-            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i class="fas fa-search text-gray-400"></i>
-          </div>
+          <form id="searchForm" method="GET" action="{{ url_for('main.bookstore') }}">
+            <input type="text" id="searchInput" name="search" value="{{ request.args.get('search', '') }}" placeholder="Search books..." 
+              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-search text-gray-400"></i>
+            </div>
+          </form>
         </div>
       </div>
     </div>
 
-    <!-- Book Grid -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <!-- Book 1 -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
+    <!-- Main Content Area - Either Book Grid or Book Detail -->
+    <div id="mainContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <!-- Book Grid (default view) -->
+      <div id="bookGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for book in books %}
+        <div class="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300" onclick="showBookDetail('{{ book.id }}')">
           <div class="relative pb-1/2">
-            <img src="/api/placeholder/300/400" alt="Book cover" class="h-64 w-full object-cover">
+            {% if book.image_url %}
+            <img src="{{ book.image_url }}" alt="{{ book.title }} cover" class="h-64 w-full object-cover">
+            {% else %}
+            <img src="/api/placeholder/300/400" alt="{{ book.title }} cover" class="h-64 w-full object-cover">
+            {% endif %}
           </div>
           <div class="p-4">
             <div class="flex justify-between items-start">
-              <h3 class="text-lg font-semibold text-gray-900">The Great Gatsby</h3>
+              <h3 class="text-lg font-semibold text-gray-900">{{ book.title }}</h3>
               <div class="flex space-x-2">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  New
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if book.condition == 'New' %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                  {{ book.condition }}
                 </span>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  Physical
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if book.format == 'Physical' %}bg-blue-100 text-blue-800{% else %}bg-purple-100 text-purple-800{% endif %}">
+                  {{ book.format }}
                 </span>
               </div>
             </div>
-            <p class="mt-1 text-sm text-gray-600">F. Scott Fitzgerald</p>
+            <p class="mt-1 text-sm text-gray-600">{{ book.author }}</p>
             <div class="mt-4 flex justify-between items-center">
-              <p class="text-lg font-medium text-gray-900">$12.99</p>
-              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <p class="text-lg font-medium text-gray-900">${{ "%.2f"|format(book.price) }}</p>
+              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
+                onclick="event.stopPropagation(); addToCart('{{ book.id }}', '{{ book.title }}', '{{ book.price }}')">
                 Add to Cart
               </button>
             </div>
           </div>
         </div>
+        {% endfor %}
+      </div>
 
-        <!-- Book 2 -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-          <div class="relative pb-1/2">
-            <img src="/api/placeholder/300/400" alt="Book cover" class="h-64 w-full object-cover">
-          </div>
-          <div class="p-4">
-            <div class="flex justify-between items-start">
-              <h3 class="text-lg font-semibold text-gray-900">To Kill a Mockingbird</h3>
-              <div class="flex space-x-2">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                  Used
-                </span>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  Physical
-                </span>
-              </div>
-            </div>
-            <p class="mt-1 text-sm text-gray-600">Harper Lee</p>
-            <div class="mt-4 flex justify-between items-center">
-              <p class="text-lg font-medium text-gray-900">$10.99</p>
-              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        </div>
+      <!-- Book Detail View (initially hidden) -->
+      <div id="bookDetail" class="hidden">
+        <!-- Back button -->
+        <button id="backToGrid" class="mb-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Books
+        </button>
 
-        <!-- Book 3 -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-          <div class="relative pb-1/2">
-            <img src="/api/placeholder/300/400" alt="Book cover" class="h-64 w-full object-cover">
-          </div>
-          <div class="p-4">
-            <div class="flex justify-between items-start">
-              <h3 class="text-lg font-semibold text-gray-900">1984</h3>
-              <div class="flex space-x-2">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  New
-                </span>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                  PDF
-                </span>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div class="md:flex">
+            <div class="md:flex-shrink-0 md:w-1/3">
+              <img id="detailBookCover" src="/api/placeholder/400/600" alt="Book cover" class="h-96 w-full object-cover md:h-full">
+            </div>
+            <div class="p-8 md:w-2/3">
+              <div class="flex justify-between mb-4">
+                <div>
+                  <h2 id="detailBookTitle" class="text-3xl font-bold text-gray-900 mb-2">Book Title</h2>
+                  <p id="detailBookAuthor" class="text-xl text-gray-600 mb-4">Author Name</p>
+                </div>
+                <div class="flex flex-col items-end">
+                  <p id="detailBookPrice" class="text-2xl font-bold text-gray-900 mb-2">$12.99</p>
+                  <div class="flex space-x-2 mb-4">
+                    <span id="detailBookCondition" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      New
+                    </span>
+                    <span id="detailBookType" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      Physical
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <p class="mt-1 text-sm text-gray-600">George Orwell</p>
-            <div class="mt-4 flex justify-between items-center">
-              <p class="text-lg font-medium text-gray-900">$8.99</p>
-              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        </div>
 
-        <!-- Book 4 -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-          <div class="relative pb-1/2">
-            <img src="/api/placeholder/300/400" alt="Book cover" class="h-64 w-full object-cover">
-          </div>
-          <div class="p-4">
-            <div class="flex justify-between items-start">
-              <h3 class="text-lg font-semibold text-gray-900">Pride and Prejudice</h3>
-              <div class="flex space-x-2">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                  Used
-                </span>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                  PDF
-                </span>
+              <div class="border-t border-gray-200 pt-4 mb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Book Description</h3>
+                <p id="detailBookDescription" class="text-gray-700 mb-6">
+                  Book description will be displayed here with all the information about the book's plot, themes, and more.
+                </p>
               </div>
-            </div>
-            <p class="mt-1 text-sm text-gray-600">Jane Austen</p>
-            <div class="mt-4 flex justify-between items-center">
-              <p class="text-lg font-medium text-gray-900">$7.99</p>
-              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Add to Cart
-              </button>
+
+              <div class="border-t border-gray-200 pt-4 mb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Book Details</h3>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="text-sm text-gray-500">Barcode</p>
+                    <p id="detailBookBarcode" class="text-sm font-medium text-gray-900"></p>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">Stock</p>
+                    <p id="detailBookStock" class="text-sm font-medium text-gray-900"></p>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">Lendable</p>
+                    <p id="detailBookLendable" class="text-sm font-medium text-gray-900"></p>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">Added</p>
+                    <p id="detailBookAdded" class="text-sm font-medium text-gray-900"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex space-x-4">
+                <button id="detailAddToCart" class="flex-1 inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  Add to Cart
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -187,49 +185,38 @@
                 </div>
 
                 <div class="mt-8">
-                  <!-- Hardcoded cart items -->
                   <div class="flow-root">
-                    <ul class="-my-6 divide-y divide-gray-200">
-                      <li class="py-6 flex">
-                        <div class="flex-shrink-0 w-24 h-24 overflow-hidden rounded-md border border-gray-200">
-                          <img src="/api/placeholder/300/400" alt="Book cover" class="w-full h-full object-cover">
-                        </div>
-                        <div class="ml-4 flex-1 flex flex-col">
-                          <div>
-                            <div class="flex justify-between text-base font-medium text-gray-900">
-                              <h3>The Great Gatsby</h3>
-                              <p class="ml-4">$12.99</p>
-                            </div>
-                            <p class="mt-1 text-sm text-gray-500">F. Scott Fitzgerald</p>
+                    <ul id="cart-items" class="-my-6 divide-y divide-gray-200">
+                      {% if session.get('cart', {})|length > 0 %}
+                        {% for book_id, item in session.get('cart', {}).items() %}
+                        <li class="py-6 flex cart-item" data-id="{{ book_id }}">
+                          <div class="flex-shrink-0 w-24 h-24 overflow-hidden rounded-md border border-gray-200">
+                            <img src="{{ item.image_url if item.image_url else '/api/placeholder/300/400' }}" alt="{{ item.title }} cover" class="w-full h-full object-cover">
                           </div>
-                          <div class="flex-1 flex items-end justify-between text-sm">
-                            <p class="text-gray-500">Qty 1</p>
-                            <div class="flex">
-                              <button class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                          <div class="ml-4 flex-1 flex flex-col">
+                            <div>
+                              <div class="flex justify-between text-base font-medium text-gray-900">
+                                <h3>{{ item.title }}</h3>
+                                <p class="ml-4">${{ "%.2f"|format(item.price) }}</p>
+                              </div>
+                              <p class="mt-1 text-sm text-gray-500">{{ item.author }}</p>
                             </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="py-6 flex">
-                        <div class="flex-shrink-0 w-24 h-24 overflow-hidden rounded-md border border-gray-200">
-                          <img src="/api/placeholder/300/400" alt="Book cover" class="w-full h-full object-cover">
-                        </div>
-                        <div class="ml-4 flex-1 flex flex-col">
-                          <div>
-                            <div class="flex justify-between text-base font-medium text-gray-900">
-                              <h3>To Kill a Mockingbird</h3>
-                              <p class="ml-4">$10.99</p>
-                            </div>
-                            <p class="mt-1 text-sm text-gray-500">Harper Lee</p>
-                          </div>
-                          <div class="flex-1 flex items-end justify-between text-sm">
-                            <p class="text-gray-500">Qty 2</p>
-                            <div class="flex">
-                              <button class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                            <div class="flex-1 flex items-end justify-between text-sm">
+                              <div class="flex items-center">
+                                <button onclick="updateQuantity('{{ book_id }}', -1)" class="text-gray-500 px-2">-</button>
+                                <p class="text-gray-500">Qty <span class="item-qty">{{ item.quantity }}</span></p>
+                                <button onclick="updateQuantity('{{ book_id }}', 1)" class="text-gray-500 px-2">+</button>
+                              </div>
+                              <div class="flex">
+                                <button onclick="removeFromCart('{{ book_id }}')" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </li>
+                        </li>
+                        {% endfor %}
+                      {% else %}
+                        <li class="py-6 text-center">Your cart is empty</li>
+                      {% endif %}
                     </ul>
                   </div>
                 </div>
@@ -238,14 +225,14 @@
               <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
                 <div class="flex justify-between text-base font-medium text-gray-900">
                   <p>Subtotal</p>
-                  <p>$34.97</p>
+                  <p id="cart-subtotal">R{{ "%.2f"|format(session.get('cart_total', 0)) }}</p>
                 </div>
                 <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
-                <div class="mt-6">
-                  <a href="/checkout" class="flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-                    Checkout
-                  </a>
-                </div>
+                <form action="{{ url_for('main.complete_purchase') }}" method="get">
+                  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md">
+                    Proceed to Checkout ({{ session['cart_count'] }} items - R{{ "%.2f"|format(session['cart_total']) }})
+                  </button>
+                </form>
                 <div class="mt-6 flex justify-center text-sm text-center text-gray-500">
                   <p>
                     or <button class="cart-close text-indigo-600 font-medium hover:text-indigo-500">Continue Shopping<span aria-hidden="true"> &rarr;</span></button>
@@ -260,9 +247,9 @@
 
     <!-- User Menu Dropdown -->
     <div id="user-menu" class="origin-top-right absolute right-4 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" style="top: 60px; right: 16px; z-index: 30; display: none;">
-      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
-      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Purchases</a>
-      <a href="/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+      <a href="{{ url_for('main.purchases') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Purchases</a>
+      <a href="{{ url_for('main.logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+
     </div>
 </div>
 
@@ -290,12 +277,6 @@
       $('#cart-sidebar').hide();
     });
     
-    // Add to cart functionality (for demo purposes)
-    $('.add-to-cart').click(function() {
-      $('#cart-sidebar').show();
-      // For real implementation, you would add the item to the cart here
-    });
-    
     // Close menus when clicking outside
     $(document).click(function(event) {
       if (!$(event.target).closest('.cart-icon, #cart-sidebar, .user-menu-icon, #user-menu').length) {
@@ -308,6 +289,193 @@
     $('#cart-sidebar .w-screen').click(function(e) {
       e.stopPropagation();
     });
+
+    // Back to grid button
+    $('#backToGrid').click(function() {
+      $('#bookDetail').addClass('hidden');
+      $('#bookGrid').removeClass('hidden');
+    });
+
+    // Book detail "Add to Cart" button
+    $('#detailAddToCart').click(function() {
+      const bookId = $(this).data('book-id');
+      const title = $('#detailBookTitle').text();
+      const price = parseFloat($('#detailBookPrice').text().replace('$', ''));
+      addToCart(bookId, title, price);
+    });
+
+    // Filter functionality
+    $('#bookType, #bookCondition').change(function() {
+      applyFilters();
+    });
+
+    // Search form submission
+    $('#searchInput').on('keyup', function(e) {
+      if (e.key === 'Enter') {
+        $('#searchForm').submit();
+      }
+    });
   });
+
+  function applyFilters() {
+    const type = $('#bookType').val();
+    const condition = $('#bookCondition').val();
+    const search = $('#searchInput').val();
+    
+    let url = "{{ url_for('main.bookstore') }}?";
+    if (type !== 'all') url += `type=${type}&`;
+    if (condition !== 'all') url += `condition=${condition}&`;
+    if (search) url += `search=${encodeURIComponent(search)}`;
+    
+    window.location.href = url;
+  }
+
+  function addToCart(bookId, title, price) {
+    fetch("{{ url_for('main.bookstore') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        book_id: bookId
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        updateCartUI(data.cart_count, data.cart_total, data.cart_items);
+        $('#cart-sidebar').show();
+      }
+    });
+  }
+
+  function updateQuantity(bookId, change) {
+    fetch("{{ url_for('main.bookstore') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        book_id: bookId,
+        change: change
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        updateCartUI(data.cart_count, data.cart_total, data.cart_items);
+      }
+    });
+  }
+
+  function removeFromCart(bookId) {
+    fetch("{{ url_for('main.bookstore') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        book_id: bookId
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        updateCartUI(data.cart_count, data.cart_total, data.cart_items);
+      }
+    });
+  }
+
+  function updateCartUI(cartCount, cartTotal, cartItems) {
+    // Update cart count badge
+    $('#cart-count').text(cartCount);
+    
+    // Update subtotal
+    $('#cart-subtotal').text('$' + cartTotal.toFixed(2));
+    
+    // Update cart items
+    const $cartItemsList = $('#cart-items');
+    $cartItemsList.empty();
+    
+    if (Object.keys(cartItems).length === 0) {
+      $cartItemsList.append('<li class="py-6 text-center">Your cart is empty</li>');
+    } else {
+      for (const [bookId, item] of Object.entries(cartItems)) {
+        $cartItemsList.append(`
+          <li class="py-6 flex cart-item" data-id="${bookId}">
+            <div class="flex-shrink-0 w-24 h-24 overflow-hidden rounded-md border border-gray-200">
+              <img src="${item.image_url || '/api/placeholder/300/400'}" alt="${item.title} cover" class="w-full h-full object-cover">
+            </div>
+            <div class="ml-4 flex-1 flex flex-col">
+              <div>
+                <div class="flex justify-between text-base font-medium text-gray-900">
+                  <h3>${item.title}</h3>
+                  <p class="ml-4">R${item.price.toFixed(2)}</p>
+                </div>
+                <p class="mt-1 text-sm text-gray-500">${item.author}</p>
+              </div>
+              <div class="flex-1 flex items-end justify-between text-sm">
+                <div class="flex items-center">
+                  <button onclick="updateQuantity('${bookId}', -1)" class="text-gray-500 px-2">-</button>
+                  <p class="text-gray-500">Qty <span class="item-qty">${item.quantity}</span></p>
+                  <button onclick="updateQuantity('${bookId}', 1)" class="text-gray-500 px-2">+</button>
+                </div>
+                <div class="flex">
+                  <button onclick="removeFromCart('${bookId}')" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                </div>
+              </div>
+            </div>
+          </li>
+        `);
+      }
+    }
+  }
+
+  // Function to load book detail
+  function showBookDetail(bookId) {
+    fetch(`{{ url_for('main.bookstore') }}?id=${bookId}`)
+      .then(response => response.json())
+      .then(book => {
+        // Populate book details
+        $('#detailBookTitle').text(book.title);
+        $('#detailBookAuthor').text(book.author);
+        $('#detailBookPrice').text('$' + book.price.toFixed(2));
+        $('#detailBookCondition').text(book.condition);
+        $('#detailBookType').text(book.format);
+        $('#detailBookDescription').text(book.description || 'No description available.');
+        $('#detailBookBarcode').text(book.barcode);
+        $('#detailBookStock').text(book.stock_quantity);
+        $('#detailBookLendable').text(book.is_lendable ? 'Yes' : 'No');
+        $('#detailBookAdded').text(new Date(book.created_at).toLocaleDateString());
+        
+        // Set condition badge color
+        if (book.condition === 'New') {
+          $('#detailBookCondition').removeClass('bg-yellow-100 text-yellow-800').addClass('bg-green-100 text-green-800');
+        } else {
+          $('#detailBookCondition').removeClass('bg-green-100 text-green-800').addClass('bg-yellow-100 text-yellow-800');
+        }
+        
+        // Set type badge color
+        if (book.format === 'Physical') {
+          $('#detailBookType').removeClass('bg-purple-100 text-purple-800').addClass('bg-blue-100 text-blue-800');
+        } else {
+          $('#detailBookType').removeClass('bg-blue-100 text-blue-800').addClass('bg-purple-100 text-purple-800');
+        }
+
+        // Set book image
+        if (book.image_url) {
+          $('#detailBookCover').attr('src', book.image_url);
+        } else {
+          $('#detailBookCover').attr('src', '/api/placeholder/400/600');
+        }
+
+        // Set book ID for the "Add to Cart" button
+        $('#detailAddToCart').data('book-id', book.id);
+        
+        // Hide grid and show detail
+        $('#bookGrid').addClass('hidden');
+        $('#bookDetail').removeClass('hidden');
+      });
+  }
 </script>
 {% endblock %}
