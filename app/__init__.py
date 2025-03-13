@@ -30,7 +30,9 @@ def create_app():
     # Import the models and routes after app initialization
     from app.models import User
     from app.routes import main
+    from .admin import admin
     app.register_blueprint(main)
+    app.register_blueprint(admin, url_prefix='/') 
 
     # Initialize the user loader function
     @login_manager.user_loader

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-800 min-h-screen">
+            <div class="p-4">
+                <h1 class="text-white text-xl font-bold">Book Store Admin</h1>
+            </div>
+            <nav class="mt-6">
+                <ul>
+                    <li
+                        class="px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg mx-2 mb-1 flex items-center bg-gray-700">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        <a href="#dashboard" class="active-nav">Dashboard</a>
+                    </li>
+                    <li class="px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg mx-2 mb-1 flex items-center">
+                        <i class="fas fa-book mr-3"></i>
+                        <a href="#books">Books</a>
+                    </li>
+                    <li class="px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg mx-2 mb-1 flex items-center">
+                        <i class="fas fa-plus-circle mr-3"></i>
+                        <a href="#add-book">Add New Book</a>
+                    </li>
+                    <li class="px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg mx-2 mb-1 flex items-center">
+                        <i class="fas fa-shopping-cart mr-3"></i>
+                        <a href="#orders">Orders</a>
+                    </li>
+                    <li class="px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg mx-2 mb-1 flex items-center">
+                        <i class="fas fa-cog mr-3"></i>
+                        <a href="#settings">Settings</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="active-section">
+                <h2 class="text-2xl font-bold mb-6">Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-blue-500 text-white mr-4">
+                                <i class="fas fa-book text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Total Books</p>
+                                <p class="text-2xl font-bold">246</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-green-500 text-white mr-4">
+                                <i class="fas fa-shopping-cart text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">New Orders</p>
+                                <p class="text-2xl font-bold">12</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-orange-500 text-white mr-4">
+                                <i class="fas fa-exclamation-triangle text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Low Stock</p>
+                                <p class="text-2xl font-bold">8</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold mb-4">Recent Orders</h3>
+                <div class="bg-white rounded-lg shadow overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Order ID</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Customer</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Date</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Amount</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">#ORD00123</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Jane Smith</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Mar 11, 2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap">$45.99</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">#ORD00122</td>
+                                <td class="px-6 py-4 whitespace-nowrap">John Doe</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Mar 10, 2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap">$89.50</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Shipped</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">#ORD00121</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Alice Johnson</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Mar 9, 2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap">$35.25</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Delivered</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Books Section -->
+            <section id="books" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Book Inventory</h2>
+                    <a href="#add-book"
+                        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Add New Book
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-4 flex justify-between items-center border-b">
+                        <div class="relative">
+                            <input type="text" placeholder="Search books..." class="pl-10 pr-4 py-2 border rounded-lg">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="flex space-x-2">
+                            <select class="border rounded-lg px-4 py-2">
+                                <option>All Formats</option>
+                                <option>PDF</option>
+                                <option>Physical</option>
+                            </select>
+                            <select class="border rounded-lg px-4 py-2">
+                                <option>All Conditions</option>
+                                <option>New</option>
+                                <option>Second-hand</option>
+                            </select>
+                            <select class="border rounded-lg px-4 py-2">
+                                <option>Sort By: Title</option>
+                                <option>Sort By: Price (Low to High)</option>
+                                <option>Sort By: Price (High to Low)</option>
+                                <option>Sort By: Stock</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Image</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Barcode</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Title</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Author</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Format</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Price</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Stock</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <img src="/api/placeholder/60/80" alt="Book Cover"
+                                        class="h-20 w-16 object-cover rounded">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">978-3-16-148410-0</td>
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-900">The Great Gatsby</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">F. Scott Fitzgerald</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Physical</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">$12.99</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <span class="text-gray-900 mr-2">15</span>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-900"><i
+                                                class="fas fa-eye"></i></button>
+                                        <button class="text-yellow-600 hover:text-yellow-900"><i
+                                                class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i
+                                                class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <img src="/api/placeholder/60/80" alt="Book Cover"
+                                        class="h-20 w-16 object-cover rounded">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">978-0-06-112008-4</td>
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-900">To Kill a Mockingbird</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">Harper Lee</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">PDF</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">$9.99</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <span class="text-red-600 font-medium mr-2">3</span>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-900"><i
+                                                class="fas fa-eye"></i></button>
+                                        <button class="text-yellow-600 hover:text-yellow-900"><i
+                                                class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i
+                                                class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="bg-white px-4 py-3 flex items-center justify-between border-t">
+                        <div class="flex-1 flex justify-between sm:hidden">
+                            <a href="#"
+                                class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Previous
+                            </a>
+                            <a href="#"
+                                class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Next
+                            </a>
+                        </div>
+                        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-gray-700">
+                                    Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of
+                                    <span class="font-medium">97</span> results
+                                </p>
+                            </div>
+                            <div>
+                                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                                    aria-label="Pagination">
+                                    <a href="#"
+                                        class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                    <a href="#"
+                                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">1</a>
+                                    <a href="#"
+                                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">2</a>
+                                    <a href="#"
+                                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">3</a>
+                                    <span
+                                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-100 text-sm font-medium text-gray-700">...</span>
+                                    <a href="#"
+                                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">8</a>
+                                    <a href="#"
+                                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">9</a>
+                                    <a href="#"
+                                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">10</a>
+                                    <a href="#"
+                                        class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Add New Book Section -->
+            <section id="add-book" class="hidden">
+                <h2 class="text-2xl font-bold mb-6">Add New Book</h2>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2" for="barcode">
+                                    Barcode <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="barcode" name="barcode" required
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2" for="title">
+                                    Title <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="title" name="title" required
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2" for="author">
+                                    Author <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="author" name="author" required
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2" for="price">
+                                    Price <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" id="price" name="price" step="0.01" required
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2" for="format">
+                                    Format <span class="text-red-500">*</span>
+                                </label>
+                                <select id="format" name="format" required
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select format</option>
+                                    <option value="PDF">PDF</option>
+                                    <option value="Physical">Physical</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2" for="condition">
+                                    Condition <span class="text-red-500">*</span>
+                                </label>
+                                <select id="condition" name="condition" required
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select condition</option>
+                                    <option value="New">New</option>
+                                    <option value="Second-hand">Second-hand</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2" for="stock">
+                                    Stock Quantity <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" id="stock" name="stock" min="0" required
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="flex space-x-4">
+                                <div class="flex-1">
+                                    <label class="block text-gray-700 font-medium mb-2">
+                                        Is Lendable?
+                                    </label>
+                                    <div class="flex space-x-4 mt-2">
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="is_lendable" value="1"
+                                                class="form-radio h-5 w-5 text-blue-600">
+                                            <span class="ml-2 text-gray-700">Yes</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="is_lendable" value="0"
+                                                class="form-radio h-5 w-5 text-blue-600" checked>
+                                            <span class="ml-2 text-gray-700">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <label class="block text-gray-700 font-medium mb-2">
+                                        Is Purchasable?
+                                    </label>
+                                    <div class="flex space-x-4 mt-2">
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="is_purchasable" value="1"
+                                                class="form-radio h-5 w-5 text-blue-600" checked>
+                                            <span class="ml-2 text-gray-700">Yes</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="is_purchasable" value="0"
+                                                class="form-radio h-5 w-5 text-blue-600">
+                                            <span class="ml-2 text-gray-700">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2" for="description">
+                                Description
+                            </label>
+                            <textarea id="description" name="description" rows="4"
+                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2" for="image">
+                                Book Cover Image
+                            </label>
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-40 h-48 bg-gray-100 flex items-center justify-center border rounded-lg overflow-hidden">
+                                    <img id="preview-image" src="/api/placeholder/150/200" alt="Book Cover Preview"
+                                        class="max-h-full max-w-full hidden">
+                                    <div id="upload-placeholder" class="text-center p-4">
+                                        <i class="fas fa-image text-gray-400 text-4xl mb-2"></i>
+                                        <p class="text-sm text-gray-500">No image selected</p>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <label
+                                        class="block w-full px-4 py-2 bg-blue-500 text-white rounded-lg text-center cursor-pointer hover:bg-blue-600">
+                                        <i class="fas fa-upload mr-2"></i> Upload Image
+                                        <input type="file" id="image" name="image" accept="image/*" class="hidden"
+                                            onchange="previewImage(this)">
+                                    </label>
+                                    <p class="text-sm text-gray-500 mt-2">
+                                        Recommended size: 600x800px. Max file size: 2MB.
+                                    </p>
+                                    <input type="text" id="image_url" name="image_url" placeholder="Or enter image URL"
+                                        class="w-full px-4 py-2 border rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end space-x-4">
+                            <button type="button"
+                                class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                Add Book
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Order Management</h2>
+                    <div class="flex space-x-2">
+                        <div>
+                            <select class="border rounded-lg px-4 py-2">
+                                <option value="all">All Orders</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="relative">
+                            <input type="text" placeholder="Search orders..." class="pl-10 pr-4 py-2 border rounded-lg">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Order ID</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Customer</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Date</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Amount</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <!-- Example Order Row -->
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">#ORD00123</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Jane Smith</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Mar 11, 2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap">$45.99</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <select
+                                        class="px-2 py-1 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="pending">Pending</option>
+                                        <option value="processing">Processing</option>
+                                        <option value="shipped">Shipped</option>
+                                        <option value="delivered">Delivered</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button class="text-blue-600 hover:text-blue-900"><i
+                                            class="fas fa-eye"></i></button>
+                                    <button class="text-green-600 hover:text-green-900 ml-2"><i
+                                            class="fas fa-check"></i></button>
+                                    <button class="text-red-600 hover:text-red-900 ml-2"><i
+                                            class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <!-- Add more rows dynamically from the backend -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</body>
+
+</html>

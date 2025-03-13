@@ -15,6 +15,11 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
+        is_admin = request.form.get('isAdmin')  
+
+        # Check if admin credentials are provided
+        if is_admin == 'on' and email == 'admin@admin.com' and password == 'admin':
+            return redirect(url_for('admin.admin_page'))  
 
         # Check if user exists in the database
         user = User.query.filter_by(email=email).first()
@@ -100,16 +105,17 @@ def bookstore():
 
     # Add to cart logic (POST request)
     if request.method == 'POST':
-        book_id = request.form.get('book_id')
-        quantity = int(request.form.get('quantity', 1))
+        data = request.get_json()
+        book_id = data.get('book_id')
+        quantity = int(data.get('quantity', 1))
         book = Book.query.get(book_id)
 
         if book:
-            cart = session['cart']
-            if book_id in cart:
-                cart[book_id]['quantity'] += quantity
+            cart = session.get('cart', {})
+            if str(book_id) in cart:
+                cart[str(book_id)]['quantity'] += quantity
             else:
-                cart[book_id] = {
+                cart[str(book_id)] = {
                     'title': book.title,
                     'author': book.author,
                     'price': float(book.price),
@@ -121,8 +127,15 @@ def bookstore():
             session['cart_count'] = sum(item['quantity'] for item in cart.values())
             session['cart_total'] = sum(item['price'] * item['quantity'] for item in cart.values())
 
+            session['cart'] = cart  # Ensure session is updated
             session.modified = True
-            flash(f"{book.title} added to cart!", 'success')
+
+            return jsonify({
+                'success': True,
+                'cart_count': session['cart_count'],
+                'cart_total': session['cart_total'],
+                'cart_items': cart
+            })
 
     return render_template('Book_Store_Main.html', books=books, cart=session['cart'])
 
@@ -178,27 +191,27 @@ def complete_purchase():
         # Form validation
         if not all([first_name, last_name, email, phone, address, city, province, zip_code]):
             flash('Please fill in all required shipping fields.', 'error')
-            return render_template('checkout.html', cart=cart, total=total)
+            return render_template('Complete_Purchase.html', cart=cart, total=total)
         
         if not all([card_number, card_name, exp_date, cvv]):
             flash('Please fill in all payment details.', 'error')
-            return render_template('checkout.html', cart=cart, total=total)
+            return render_template('Complete_Purchase.html', cart=cart, total=total)
         
         # Credit card validation using regex
         card_number = card_number.replace(' ', '')  # Remove any spaces
         if not re.match(CREDIT_CARD_PATTERN, card_number):
             flash('Invalid credit card number. Please enter a valid card with 13-19 digits.', 'error')
-            return render_template('checkout.html', cart=cart, total=total)
+            return render_template('Complete_Purchase.html', cart=cart, total=total)
         
         # Simple expiration date validation (MM/YY format)
         if not re.match(r'^(0[1-9]|1[0-2])\/([0-9]{2})$', exp_date):
             flash('Invalid expiration date. Please use MM/YY format.', 'error')
-            return render_template('checkout.html', cart=cart, total=total)
+            return render_template('Complete_Purchase.html', cart=cart, total=total)
         
         # Simple CVV validation (3-4 digits)
         if not re.match(r'^[0-9]{3,4}$', cvv):
             flash('Invalid CVV. Please enter 3-4 digits.', 'error')
-            return render_template('checkout.html', cart=cart, total=total)
+            return render_template('Complete_Purchase.html', cart=cart, total=total)
             
         try:
             # Save shipping address to database
@@ -265,6 +278,7 @@ def complete_purchase():
     
     # Render the checkout template with the cart and total
     return render_template('Complete_Purchase.html', cart=cart, total=total)
+
 
 @main.route('/logout')
 @login_required
