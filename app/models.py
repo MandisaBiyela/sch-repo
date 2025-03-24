@@ -35,6 +35,7 @@ class Book(db.Model):
     is_purchasable = db.Column(db.Boolean, default=True, nullable=False)
     stock_quantity = db.Column(db.Integer, default=0, nullable=False)
     image_url = db.Column(db.String(500), nullable=True)
+    pdf_url = db.Column(db.String(500), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     # Fixed relationship definitions
@@ -50,8 +51,9 @@ class TransactionModel(db.Model):
     shipping_address_id = db.Column(db.Integer, db.ForeignKey('shipping_address.id', ondelete="CASCADE"), nullable=True)
     quantity = db.Column(db.Integer, default=1, nullable=False)
     total_price = db.Column(db.Float, nullable=False) 
-    status = db.Column(db.Enum('Pending', 'Completed', 'Failed', name='transaction_status'), default='Pending', nullable=False)
+    status = db.Column(db.String(50), default='Pending', nullable=False)
     purchase_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    delivery_option = db.Column(db.Enum('delivery', 'store_pickup', 'digital', name='delivery_option'), nullable=False)  # New field
 
 
 class ShippingAddress(db.Model):
@@ -62,12 +64,29 @@ class ShippingAddress(db.Model):
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), nullable=False)
-    phone = db.Column(db.String(20), nullable=False)
-    street_address = db.Column(db.String(255), nullable=False)
+    phone = db.Column(db.String(20), nullable=True)
+    street_address = db.Column(db.String(255), nullable=True)  # Nullable for store pickup and digital
     apartment = db.Column(db.String(255), nullable=True)
-    city = db.Column(db.String(100), nullable=False)
-    province = db.Column(db.String(100), nullable=False)
-    zip_code = db.Column(db.String(20), nullable=False)
+    city = db.Column(db.String(100), nullable=True)  # Nullable for store pickup and digital
+    province = db.Column(db.String(100), nullable=True)  # Nullable for store pickup and digital
+    zip_code = db.Column(db.String(20), nullable=True)  # Nullable for store pickup and digital
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    delivery_type = db.Column(db.Enum('delivery', 'store_pickup', 'digital', name='delivery_type'), nullable=False)  # New field
     
     transactions = db.relationship('TransactionModel', backref='shipping_address', lazy=True)
+
+class Review(db.Model):
+    __tablename__ = 'review'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id', ondelete="CASCADE"), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)  # Rating from 1-5
+    title = db.Column(db.String(255), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Define relationships
+    user = db.relationship('User', backref=db.backref('reviews', lazy=True, cascade="all, delete-orphan"))
+    book = db.relationship('Book', backref=db.backref('reviews', lazy=True, cascade="all, delete-orphan"))
+    

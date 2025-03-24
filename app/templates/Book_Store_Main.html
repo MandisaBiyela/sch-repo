@@ -4,283 +4,623 @@
 
 {% block content %}
 <div id="app">
-    <!-- Header -->
-    <header class="bg-white shadow">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex justify-between items-center">
-          <h1 class="text-2xl font-bold text-gray-800">Bookstore</h1>
-          <div class="flex items-center space-x-6">
-            <div class="relative cart-icon cursor-pointer">
-              <i class="fas fa-shopping-cart text-gray-700 text-xl"></i>
-              <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                {{ session.get('cart_count', 0) }}
-              </span>
-            </div>
-            <div class="relative user-menu-icon cursor-pointer">
-              <i class="fas fa-user text-gray-700 text-xl"></i>
-            </div>
+  <!-- Header -->
+  <header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-800">Bookstore</h1>
+        <div class="flex items-center space-x-6">
+          <div class="relative wishlist-icon cursor-pointer">
+            <i class="fas fa-heart text-gray-700 text-xl"></i>
+            <span id="wishlist-count"
+              class="absolute -top-2 -right-2 bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+              {{ session.get('wishlist_count', 0) if session.get('wishlist_count') else 0 }}
+            </span>
+          </div>
+          <div class="relative cart-icon cursor-pointer">
+            <i class="fas fa-shopping-cart text-gray-700 text-xl"></i>
+            <span id="cart-count"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+              {{ session.get('cart_count', 0) }}
+            </span>
+          </div>
+          <div class="relative user-menu-icon cursor-pointer">
+            <i class="fas fa-user text-gray-700 text-xl"></i>
           </div>
         </div>
       </div>
-    </header>
-
-    <!-- Filters and Search -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between bg-white p-4 rounded-lg shadow">
-        <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 mb-4 md:mb-0">
-          <div>
-            <label for="bookType" class="block text-sm font-medium text-gray-700">Book Type</label>
-            <select id="bookType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md">
+    </div>
+  </header>
+  <!-- Filters and Search -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between bg-white p-4 rounded-lg shadow">
+      <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 mb-4 md:mb-0">
+        <div>
+          <label for="bookType" class="block text-sm font-medium text-gray-700 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-500" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            Book Type
+          </label>
+          <div class="relative mt-1">
+            <select id="bookType"
+              class="block w-full pl-10 pr-10 py-2 text-base border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
               <option value="all">All Types</option>
               <option value="Physical">Physical</option>
               <option value="PDF">PDF</option>
             </select>
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
-          <div>
-            <label for="bookCondition" class="block text-sm font-medium text-gray-700">Condition</label>
-            <select id="bookCondition" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md">
+        </div>
+        <div>
+          <label for="bookCondition" class="block text-sm font-medium text-gray-700 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-500" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Condition
+          </label>
+          <div class="relative mt-1">
+            <select id="bookCondition"
+              class="block w-full pl-10 pr-10 py-2 text-base border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
               <option value="all">All Conditions</option>
               <option value="New">New</option>
               <option value="Second-hand">Used</option>
             </select>
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
         </div>
-        <div class="relative flex-1 max-w-md">
-          <form id="searchForm" method="GET" action="{{ url_for('main.bookstore') }}">
-            <input type="text" id="searchInput" name="search" value="{{ request.args.get('search', '') }}" placeholder="Search books..." 
-              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fas fa-search text-gray-400"></i>
-            </div>
-          </form>
+      </div>
+      <div class="relative flex-1 max-w-md">
+        <form id="searchForm" method="GET" action="{{ url_for('main.bookstore') }}">
+          <input type="text" id="searchInput" name="search" value="{{ request.args.get('search', '') }}"
+            placeholder="Search books..."
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <button type="submit" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500 hover:text-indigo-600" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area - Either Book Grid or Book Detail -->
+  <div id="mainContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+   <!-- Book Grid (default view) with Wishlist Buttons -->
+<div id="bookGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  {% for book in books %}
+  <div
+    class="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"
+    onclick="showBookDetail('{{ book.id }}')">
+    <div class="relative pb-1/2">
+      {% if book.image_url %}
+      <img src="{{ book.image_url }}" alt="{{ book.title }} cover" class="h-64 w-full object-cover">
+      {% else %}
+      <img src="/api/placeholder/300/400" alt="{{ book.title }} cover" class="h-64 w-full object-cover">
+      {% endif %}
+      <!-- Wishlist icon overlay in top-right corner -->
+      <button
+      class="wishlist-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white bg-opacity-70 flex items-center justify-center shadow hover:bg-opacity-100 transition-all duration-200"
+      onclick="event.stopPropagation(); toggleWishlist('{{ book.id }}', '{{ book.title }}', '{{ book.price }}', '{{ book.image_url|default('/api/placeholder/300/400') }}', event)">
+      <i class="fas fa-heart wishlist-icon-{{ book.id }} text-gray-400"></i>
+    </button>
+    </div>
+    <div class="p-4">
+      <div class="flex justify-between items-start">
+        <h3 class="text-lg font-semibold text-gray-900">{{ book.title }}</h3>
+        <div class="flex space-x-2">
+          <span
+            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if book.condition == 'New' %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+            {{ book.condition }}
+          </span>
+          <span
+            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if book.format == 'Physical' %}bg-blue-100 text-blue-800{% else %}bg-purple-100 text-purple-800{% endif %}">
+            {{ book.format }}
+          </span>
+        </div>
+      </div>
+      <p class="mt-1 text-sm text-gray-600">{{ book.author }}</p>
+      <div class="mt-4 flex justify-between items-center">
+        <p class="text-lg font-medium text-gray-900">R{{ "%.2f"|format(book.price) }}</p>
+        <div class="flex space-x-2">
+          <button
+            class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            onclick="event.stopPropagation(); addToCart('{{ book.id }}', '{{ book.title }}', '{{ book.price }}')">
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
+  </div>
+  {% endfor %}
+</div>
 
-    <!-- Main Content Area - Either Book Grid or Book Detail -->
-    <div id="mainContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      <!-- Book Grid (default view) -->
-      <div id="bookGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {% for book in books %}
-        <div class="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300" onclick="showBookDetail('{{ book.id }}')">
-          <div class="relative pb-1/2">
-            {% if book.image_url %}
-            <img src="{{ book.image_url }}" alt="{{ book.title }} cover" class="h-64 w-full object-cover">
-            {% else %}
-            <img src="/api/placeholder/300/400" alt="{{ book.title }} cover" class="h-64 w-full object-cover">
-            {% endif %}
+    <!-- Book Detail View (initially hidden) -->
+    <div id="bookDetail" class="hidden">
+      <!-- Back button -->
+      <button id="backToGrid"
+        class="mb-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Books
+      </button>
+
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="md:flex">
+          <div class="md:flex-shrink-0 md:w-1/3">
+            <img id="detailBookCover" src="" alt="Book cover" class="h-96 w-full object-cover md:h-full">
           </div>
-          <div class="p-4">
-            <div class="flex justify-between items-start">
-              <h3 class="text-lg font-semibold text-gray-900">{{ book.title }}</h3>
-              <div class="flex space-x-2">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if book.condition == 'New' %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
-                  {{ book.condition }}
-                </span>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if book.format == 'Physical' %}bg-blue-100 text-blue-800{% else %}bg-purple-100 text-purple-800{% endif %}">
-                  {{ book.format }}
-                </span>
+          <div class="p-8 md:w-2/3">
+            <div class="mb-6">
+              <h2 id="detailBookTitle" class="text-2xl font-bold text-gray-900 mb-2"></h2>
+              <p id="detailBookAuthor" class="text-lg text-gray-600 mb-4"></p>
+              <div class="flex items-center justify-between">
+                <p id="detailBookPrice" class="text-xl font-semibold text-gray-900"></p>
+                <div class="flex space-x-2">
+                  <span id="detailBookCondition"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
+                  <span id="detailBookType"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
+                </div>
               </div>
             </div>
-            <p class="mt-1 text-sm text-gray-600">{{ book.author }}</p>
-            <div class="mt-4 flex justify-between items-center">
-              <p class="text-lg font-medium text-gray-900">R{{ "%.2f"|format(book.price) }}</p>
-              <button class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
+
+            <div class="border-t border-gray-200 pt-4 mb-6">
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Book Description</h3>
+              <p id="detailBookDescription" class="text-gray-700 mb-6">
+                Book description will be displayed here with all the information about the book's plot, themes, and
+                more.
+              </p>
+            </div>
+
+            <div class="border-t border-gray-200 pt-4 mb-6">
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Book Details</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Barcode</p>
+                  <p id="detailBookBarcode" class="text-sm font-medium text-gray-900"></p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Stock</p>
+                  <p id="detailBookStock" class="text-sm font-medium text-gray-900"></p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Added</p>
+                  <p id="detailBookAdded" class="text-sm font-medium text-gray-900"></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex space-x-4">
+              <button id="detailAddToCart"
+                class="flex-1 inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- Add this inside the book detail view, after the existing sections -->
+      <div class="border-t border-gray-200 pt-4 mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-medium text-gray-900">Customer Reviews</h3>
+          <button id="writeReviewBtn"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Write a Review
+          </button>
+        </div>
+
+        <div id="reviewsContainer" class="space-y-4">
+          <!-- Sample review (this would be dynamically populated in a real app) -->
+          <div class="bg-gray-50 p-4 rounded-md">
+            <div class="flex items-center mb-2">
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="ml-2 text-sm font-medium text-gray-600">4.5/5</span>
+            </div>
+            <h4 class="font-medium">Great read!</h4>
+            <p class="text-gray-600 text-sm mt-1">This book exceeded my expectations. The characters were well-developed
+              and the story kept me engaged throughout.</p>
+            <p class="text-gray-500 text-xs mt-2">John D. - March 15, 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Modal (hidden by default) -->
+      <div id="reviewModal"
+        class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-gray-900">Write a Review</h3>
+            <button id="closeReviewModal" class="text-gray-500 hover:text-gray-700">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+            <div class="flex space-x-2 text-2xl" id="starRating">
+              <i class="far fa-star cursor-pointer hover:text-yellow-400" data-rating="1"></i>
+              <i class="far fa-star cursor-pointer hover:text-yellow-400" data-rating="2"></i>
+              <i class="far fa-star cursor-pointer hover:text-yellow-400" data-rating="3"></i>
+              <i class="far fa-star cursor-pointer hover:text-yellow-400" data-rating="4"></i>
+              <i class="far fa-star cursor-pointer hover:text-yellow-400" data-rating="5"></i>
+            </div>
+            <span id="ratingValue" class="text-sm text-gray-500 mt-1 block">0/5</span>
+          </div>
+
+          <div class="mb-4">
+            <label for="reviewTitle" class="block text-sm font-medium text-gray-700 mb-1">Review Title</label>
+            <input type="text" id="reviewTitle"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Summarize your review">
+          </div>
+
+          <div class="mb-6">
+            <label for="reviewContent" class="block text-sm font-medium text-gray-700 mb-1">Your Review</label>
+            <textarea id="reviewContent" rows="4"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="What did you like or dislike about this book?"></textarea>
+          </div>
+
+          <div class="flex justify-end">
+            <button id="cancelReview"
+              class="mr-3 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">Cancel</button>
+            <button id="submitReview"
+              class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Submit
+              Review</button>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        // Review modal functionality
+        const writeReviewBtn = document.getElementById('writeReviewBtn');
+        const reviewModal = document.getElementById('reviewModal');
+        const closeReviewModal = document.getElementById('closeReviewModal');
+        const cancelReview = document.getElementById('cancelReview');
+        const submitReview = document.getElementById('submitReview');
+        const starRatingContainer = document.getElementById('starRating');
+        const ratingValue = document.getElementById('ratingValue');
+        const stars = starRatingContainer.querySelectorAll('i');
+        const reviewsContainer = document.getElementById('reviewsContainer');
+
+        // Current rating value
+        let currentRating = 0;
+
+        // Open review modal
+        writeReviewBtn.addEventListener('click', () => {
+          reviewModal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+        });
+
+        // Close review modal functions
+        function closeModal() {
+          reviewModal.classList.add('hidden');
+          document.body.style.overflow = ''; // Re-enable scrolling
+
+          // Reset form
+          resetReviewForm();
+        }
+
+        closeReviewModal.addEventListener('click', closeModal);
+        cancelReview.addEventListener('click', closeModal);
+
+        // Close modal when clicking outside of it
+        reviewModal.addEventListener('click', (e) => {
+          if (e.target === reviewModal) {
+            closeModal();
+          }
+        });
+
+        // Star rating functionality
+        stars.forEach(star => {
+          star.addEventListener('click', () => {
+            const rating = parseInt(star.getAttribute('data-rating'));
+            setRating(rating);
+          });
+
+          // Preview rating on hover
+          star.addEventListener('mouseenter', () => {
+            const rating = parseInt(star.getAttribute('data-rating'));
+            previewRating(rating);
+          });
+        });
+
+        // Reset stars on mouse leave
+        starRatingContainer.addEventListener('mouseleave', () => {
+          resetStars();
+          fillStars(currentRating);
+        });
+
+        // Set the rating
+        function setRating(rating) {
+          currentRating = rating;
+          ratingValue.textContent = `${rating}/5`;
+          resetStars();
+          fillStars(rating);
+        }
+
+        // Preview rating (when hovering)
+        function previewRating(rating) {
+          resetStars();
+          fillStars(rating);
+        }
+
+        // Reset all stars to empty
+        function resetStars() {
+          stars.forEach(star => {
+            star.classList.remove('fas');
+            star.classList.add('far');
+            star.classList.remove('text-yellow-400');
+          });
+        }
+
+        // Fill stars up to the rating
+        function fillStars(rating) {
+          for (let i = 0; i < rating; i++) {
+            stars[i].classList.remove('far');
+            stars[i].classList.add('fas');
+            stars[i].classList.add('text-yellow-400');
+          }
+        }
+
+        // Reset review form
+        function resetReviewForm() {
+          document.getElementById('reviewTitle').value = '';
+          document.getElementById('reviewContent').value = '';
+          currentRating = 0;
+          ratingValue.textContent = '0/5';
+          resetStars();
+        }
+
+
+        // Add a new review to the page
+        function addReviewToPage(rating, title, content) {
+          const currentDate = new Date();
+          const formattedDate = currentDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+
+          // Create star rating HTML
+          let starsHtml = '';
+          for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+              starsHtml += '<i class="fas fa-star"></i>';
+            } else {
+              starsHtml += '<i class="far fa-star"></i>';
+            }
+          }
+
+          // Create review HTML
+          const reviewHtml = `
+      <div class="bg-gray-50 p-4 rounded-md">
+        <div class="flex items-center mb-2">
+          <div class="flex text-yellow-400">
+            ${starsHtml}
+          </div>
+          <span class="ml-2 text-sm font-medium text-gray-600">${rating}/5</span>
+        </div>
+        <h4 class="font-medium">${title}</h4>
+        <p class="text-gray-600 text-sm mt-1">${content}</p>
+        <p class="text-gray-500 text-xs mt-2">You - ${formattedDate}</p>
+      </div>
+    `;
+
+          // Add to the reviews container
+          reviewsContainer.innerHTML = reviewHtml + reviewsContainer.innerHTML;
+        }
+      </script>
+
+    </div>
+  </div>
+
+  <!-- Cart Sidebar -->
+  <div id="cart-sidebar" class="fixed inset-0 overflow-hidden z-20" style="display: none;">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity overlay-close"></div>
+      <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+        <div class="w-screen max-w-md">
+          <div class="h-full flex flex-col bg-white shadow-xl">
+            <div class="flex-1 py-6 overflow-y-auto px-4 sm:px-6">
+              <div class="flex items-start justify-between">
+                <h2 class="text-lg font-medium text-gray-900">Shopping cart</h2>
+                <div class="ml-3 h-7 flex items-center">
+                  <button type="button" class="cart-close -m-2 p-2 text-gray-400 hover:text-gray-500">
+                    <span class="sr-only">Close panel</span>
+                    <i class="fas fa-times text-gray-500"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-8">
+                <div class="flow-root">
+                  <ul id="cart-items" class="-my-6 divide-y divide-gray-200">
+                    {% if session.get('cart', {})|length > 0 %}
+                    {% for book_id, item in session.get('cart', {}).items() %}
+                    <li class="py-6 flex cart-item" data-id="{{ book_id }}">
+                      <div class="flex-shrink-0 w-24 h-24 overflow-hidden rounded-md border border-gray-200">
+                        <img src="{{ item.image_url if item.image_url else '/api/placeholder/300/400' }}"
+                          alt="{{ item.title }} cover" class="w-full h-full object-cover">
+                      </div>
+                      <div class="ml-4 flex-1 flex flex-col">
+                        <div>
+                          <div class="flex justify-between text-base font-medium text-gray-900">
+                            <h3>{{ item.title }}</h3>
+                            <p class="ml-4">R{{ "%.2f"|format(item.price) }}</p>
+                          </div>
+                          <p class="mt-1 text-sm text-gray-500">{{ item.author }}</p>
+                          <p class="mt-1 text-sm text-gray-500"><strong>Format:</strong> {{ item.format }}</p>
+                          <!-- Added format display -->
+                        </div>
+
+                        <div class="flex-1 flex items-end justify-between text-sm">
+                          <div class="flex items-center">
+                            <button onclick="updateQuantity('{{ book_id }}', -1)" class="text-gray-500 px-2">-</button>
+                            <p class="text-gray-500">Qty <span class="item-qty">{{ item.quantity }}</span></p>
+                            <button onclick="updateQuantity('{{ book_id }}', 1)" class="text-gray-500 px-2">+</button>
+                          </div>
+                          <div class="flex">
+                            <button onclick="removeFromCart('{{ book_id }}')"
+                              class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    {% endfor %}
+                    {% else %}
+                    <li class="py-6 text-center">Your cart is empty</li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
+              <div class="flex justify-between text-base font-medium text-gray-900">
+                <p>Subtotal</p>
+                <p id="cart-subtotal">R{{ "%.2f"|format(session.get('cart_total', 0)) }}</p>
+              </div>
+              <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+              <form action="{{ url_for('main.complete_purchase') }}" method="get">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md">
+                  Proceed to Checkout
+                </button>
+              </form>
+              <div class="mt-6 flex justify-center text-sm text-center text-gray-500">
+                <p>
+                  or <button class="cart-close text-indigo-600 font-medium hover:text-indigo-500">Continue Shopping<span
+                      aria-hidden="true"> &rarr;</span></button>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Menu Dropdown -->
+  <div id="user-menu"
+    class="origin-top-right absolute right-4 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+    style="top: 60px; right: 16px; z-index: 30; display: none;">
+    <a href="{{ url_for('main.purchases') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My
+      Purchases</a>
+    <a href="{{ url_for('main.user_profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Profile</a>
+    <a href="{{ url_for('main.logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+
+  </div>
+</div>
+<!-- Recommendations Section -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Recommendations</h2>
+  <div id="recommendationsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% if recommended_books %}
+      {% for book in recommended_books %}
+      <div
+        class="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"
+        onclick="showBookDetail('{{ book.id }}')">
+        <div class="relative pb-1/2">
+          {% if book.image_url %}
+          <img src="{{ book.image_url }}" alt="{{ book.title }} cover" class="h-64 w-full object-cover">
+          {% else %}
+          <img src="/api/placeholder/300/400" alt="{{ book.title }} cover" class="h-64 w-full object-cover">
+          {% endif %}
+          <!-- Wishlist icon overlay in top-right corner -->
+          <button
+            class="wishlist-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white bg-opacity-70 flex items-center justify-center shadow hover:bg-opacity-100 transition-all duration-200"
+            onclick="event.stopPropagation(); toggleWishlist('{{ book.id }}', '{{ book.title }}', '{{ book.price }}', '{{ book.image_url|default('/api/placeholder/300/400') }}', event)">
+            <i class="fas fa-heart wishlist-icon-{{ book.id }} text-gray-400"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <div class="flex justify-between items-start">
+            <h3 class="text-lg font-semibold text-gray-900">{{ book.title }}</h3>
+            <div class="flex space-x-2">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if book.condition == 'New' %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                {{ book.condition }}
+              </span>
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if book.format == 'Physical' %}bg-blue-100 text-blue-800{% else %}bg-purple-100 text-purple-800{% endif %}">
+                {{ book.format }}
+              </span>
+            </div>
+          </div>
+          <p class="mt-1 text-sm text-gray-600">{{ book.author }}</p>
+          <div class="mt-4 flex justify-between items-center">
+            <p class="text-lg font-medium text-gray-900">R{{ "%.2f"|format(book.price) }}</p>
+            <div class="flex space-x-2">
+              <button
+                class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 onclick="event.stopPropagation(); addToCart('{{ book.id }}', '{{ book.title }}', '{{ book.price }}')">
                 Add to Cart
               </button>
             </div>
           </div>
         </div>
-        {% endfor %}
       </div>
-
-      <!-- Book Detail View (initially hidden) -->
-      <div id="bookDetail" class="hidden">
-        <!-- Back button -->
-        <button id="backToGrid" class="mb-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          <i class="fas fa-arrow-left mr-2"></i> Back to Books
-        </button>
-
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div class="md:flex">
-            <div class="md:flex-shrink-0 md:w-1/3">
-              <img id="detailBookCover" src="/api/placeholder/400/600" alt="Book cover" class="h-96 w-full object-cover md:h-full">
-            </div>
-            <div class="p-8 md:w-2/3">
-
-
-              <div class="border-t border-gray-200 pt-4 mb-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Book Description</h3>
-                <p id="detailBookDescription" class="text-gray-700 mb-6">
-                  Book description will be displayed here with all the information about the book's plot, themes, and more.
-                </p>
-              </div>
-
-              <div class="border-t border-gray-200 pt-4 mb-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Book Details</h3>
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-sm text-gray-500">Barcode</p>
-                    <p id="detailBookBarcode" class="text-sm font-medium text-gray-900"></p>
-                  </div>
-                  <div>
-                    <p class="text-sm text-gray-500">Stock</p>
-                    <p id="detailBookStock" class="text-sm font-medium text-gray-900"></p>
-                  </div>
-                  <div>
-                    <p class="text-sm text-gray-500">Lendable</p>
-                    <p id="detailBookLendable" class="text-sm font-medium text-gray-900"></p>
-                  </div>
-                  <div>
-                    <p class="text-sm text-gray-500">Added</p>
-                    <p id="detailBookAdded" class="text-sm font-medium text-gray-900"></p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex space-x-4">
-                <button id="detailAddToCart" class="flex-1 inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cart Sidebar -->
-    <div id="cart-sidebar" class="fixed inset-0 overflow-hidden z-20" style="display: none;">
-      <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity overlay-close"></div>
-        <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
-          <div class="w-screen max-w-md">
-            <div class="h-full flex flex-col bg-white shadow-xl">
-              <div class="flex-1 py-6 overflow-y-auto px-4 sm:px-6">
-                <div class="flex items-start justify-between">
-                  <h2 class="text-lg font-medium text-gray-900">Shopping cart</h2>
-                  <div class="ml-3 h-7 flex items-center">
-                    <button type="button" class="cart-close -m-2 p-2 text-gray-400 hover:text-gray-500">
-                      <span class="sr-only">Close panel</span>
-                      <i class="fas fa-times text-gray-500"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="mt-8">
-                  <div class="flow-root">
-                    <ul id="cart-items" class="-my-6 divide-y divide-gray-200">
-                      {% if session.get('cart', {})|length > 0 %}
-                        {% for book_id, item in session.get('cart', {}).items() %}
-                        <li class="py-6 flex cart-item" data-id="{{ book_id }}">
-                          <div class="flex-shrink-0 w-24 h-24 overflow-hidden rounded-md border border-gray-200">
-                            <img src="{{ item.image_url if item.image_url else '/api/placeholder/300/400' }}" alt="{{ item.title }} cover" class="w-full h-full object-cover">
-                          </div>
-                          <div class="ml-4 flex-1 flex flex-col">
-                            <div>
-                              <div class="flex justify-between text-base font-medium text-gray-900">
-                                <h3>{{ item.title }}</h3>
-                                <p class="ml-4">R{{ "%.2f"|format(item.price) }}</p>
-                              </div>
-                              <p class="mt-1 text-sm text-gray-500">{{ item.author }}</p>
-                            </div>
-                            <div class="flex-1 flex items-end justify-between text-sm">
-                              <div class="flex items-center">
-                                <button onclick="updateQuantity('{{ book_id }}', -1)" class="text-gray-500 px-2">-</button>
-                                <p class="text-gray-500">Qty <span class="item-qty">{{ item.quantity }}</span></p>
-                                <button onclick="updateQuantity('{{ book_id }}', 1)" class="text-gray-500 px-2">+</button>
-                              </div>
-                              <div class="flex">
-                                <button onclick="removeFromCart('{{ book_id }}')" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                        {% endfor %}
-                      {% else %}
-                        <li class="py-6 text-center">Your cart is empty</li>
-                      {% endif %}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
-                <div class="flex justify-between text-base font-medium text-gray-900">
-                  <p>Subtotal</p>
-                  <p id="cart-subtotal">R{{ "%.2f"|format(session.get('cart_total', 0)) }}</p>
-                </div>
-                <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
-                <form action="{{ url_for('main.complete_purchase') }}" method="get">
-                  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md">
-                    Proceed to Checkout ({{ session['cart_count'] }} items - R{{ "%.2f"|format(session['cart_total']) }})
-                  </button>
-                </form>
-                <div class="mt-6 flex justify-center text-sm text-center text-gray-500">
-                  <p>
-                    or <button class="cart-close text-indigo-600 font-medium hover:text-indigo-500">Continue Shopping<span aria-hidden="true"> &rarr;</span></button>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- User Menu Dropdown -->
-    <div id="user-menu" class="origin-top-right absolute right-4 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" style="top: 60px; right: 16px; z-index: 30; display: none;">
-      <a href="{{ url_for('main.purchases') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Purchases</a>
-      <a href="{{ url_for('main.logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
-
-    </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-gray-600 col-span-full text-center">No recommendations available.</p>
+    {% endif %}
+  </div>
 </div>
-
 <!-- Make sure FontAwesome is included -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  function addToCart(bookId, title, price) {
-    fetch("{{ url_for('main.bookstore') }}", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            book_id: bookId
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            updateCartUI(data.cart_count, data.cart_total, data.cart_items);
-            $('#cart-sidebar').show();
-        }
-    });
-}
-  $(document).ready(function() {
+  $(document).ready(function () {
     // Toggle cart visibility
-    $('.cart-icon').click(function(e) {
+    $('.cart-icon').click(function (e) {
       e.stopPropagation();
       $('#cart-sidebar').toggle();
       $('#user-menu').hide();
     });
-    
+
     // Close cart when clicking the close button or overlay
-    $('.cart-close, .overlay-close').click(function() {
+    $('.cart-close, .overlay-close').click(function () {
       $('#cart-sidebar').hide();
     });
-    
+
     // Toggle user menu
-    $('.user-menu-icon').click(function(e) {
+    $('.user-menu-icon').click(function (e) {
       e.stopPropagation();
       $('#user-menu').toggle();
       $('#cart-sidebar').hide();
     });
-    
+
     // Close menus when clicking outside
-    $(document).click(function(event) {
+    $(document).click(function (event) {
       if (!$(event.target).closest('.cart-icon, #cart-sidebar, .user-menu-icon, #user-menu').length) {
         $('#cart-sidebar').hide();
         $('#user-menu').hide();
@@ -288,31 +628,29 @@
     });
 
     // Prevent closing when clicking inside the cart
-    $('#cart-sidebar .w-screen').click(function(e) {
+    $('#cart-sidebar .w-screen').click(function (e) {
       e.stopPropagation();
     });
 
     // Back to grid button
-    $('#backToGrid').click(function() {
+    $('#backToGrid').click(function () {
       $('#bookDetail').addClass('hidden');
       $('#bookGrid').removeClass('hidden');
     });
 
     // Book detail "Add to Cart" button
-    $('#detailAddToCart').click(function() {
+    $('#detailAddToCart').click(function () {
       const bookId = $(this).data('book-id');
-      const title = $('#detailBookTitle').text();
-      const price = parseFloat($('#detailBookPrice').text().replace('$', ''));
-      addToCart(bookId, title, price);
+      addToCart(bookId);
     });
 
     // Filter functionality
-    $('#bookType, #bookCondition').change(function() {
+    $('#bookType, #bookCondition').change(function () {
       applyFilters();
     });
 
     // Search form submission
-    $('#searchInput').on('keyup', function(e) {
+    $('#searchInput').on('keyup', function (e) {
       if (e.key === 'Enter') {
         $('#searchForm').submit();
       }
@@ -323,35 +661,16 @@
     const type = $('#bookType').val();
     const condition = $('#bookCondition').val();
     const search = $('#searchInput').val();
-    
+
     let url = "{{ url_for('main.bookstore') }}?";
     if (type !== 'all') url += `type=${type}&`;
     if (condition !== 'all') url += `condition=${condition}&`;
     if (search) url += `search=${encodeURIComponent(search)}`;
-    
+
     window.location.href = url;
   }
 
-  function addToCart(bookId, title, price) {
-    fetch("{{ url_for('main.bookstore') }}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        book_id: bookId
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        updateCartUI(data.cart_count, data.cart_total, data.cart_items);
-        $('#cart-sidebar').show();
-      }
-    });
-  }
-
-  function updateQuantity(bookId, change) {
+  function addToCart(bookId) {
     fetch("{{ url_for('main.bookstore') }}", {
       method: 'POST',
       headers: {
@@ -359,46 +678,70 @@
       },
       body: JSON.stringify({
         book_id: bookId,
-        change: change
+        quantity: 1
       })
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        updateCartUI(data.cart_count, data.cart_total, data.cart_items);
-      }
-    });
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          updateCartUI(data.cart_count, data.cart_total, data.cart_items);
+          $('#cart-sidebar').show();
+        }
+      });
   }
 
-  function removeFromCart(bookId) {
+  function updateQuantity(bookId, change) {
+    // For decreasing quantity, we'll send a negative quantity value
     fetch("{{ url_for('main.bookstore') }}", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        book_id: bookId
+        book_id: bookId,
+        quantity: change  // This can be 1 or -1
       })
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        updateCartUI(data.cart_count, data.cart_total, data.cart_items);
-      }
-    });
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          updateCartUI(data.cart_count, data.cart_total, data.cart_items);
+        }
+      });
+  }
+
+  function removeFromCart(bookId) {
+    // To remove the item, we'll use a special quantity value like -999
+    // This will signal to the backend to remove the entire item
+    fetch("{{ url_for('main.bookstore') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        book_id: bookId,
+        quantity: -999  // Special value to indicate removal
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          updateCartUI(data.cart_count, data.cart_total, data.cart_items);
+        }
+      });
   }
 
   function updateCartUI(cartCount, cartTotal, cartItems) {
     // Update cart count badge
     $('#cart-count').text(cartCount);
-    
+
     // Update subtotal
-    $('#cart-subtotal').text('$' + cartTotal.toFixed(2));
-    
+    $('#cart-subtotal').text('R' + cartTotal.toFixed(2));
+
     // Update cart items
     const $cartItemsList = $('#cart-items');
     $cartItemsList.empty();
-    
+
     if (Object.keys(cartItems).length === 0) {
       $cartItemsList.append('<li class="py-6 text-center">Your cart is empty</li>');
     } else {
@@ -415,6 +758,7 @@
                   <p class="ml-4">R${item.price.toFixed(2)}</p>
                 </div>
                 <p class="mt-1 text-sm text-gray-500">${item.author}</p>
+                <p class="mt-1 text-sm text-gray-500"><strong>Format:</strong> ${item.format || 'N/A'}</p> <!-- Added format display -->
               </div>
               <div class="flex-1 flex items-end justify-between text-sm">
                 <div class="flex items-center">
@@ -433,51 +777,387 @@
     }
   }
 
-  // Function to load book detail
-  function showBookDetail(bookId) {
-    fetch(`{{ url_for('main.bookstore') }}?id=${bookId}`)
-      .then(response => response.json())
-      .then(book => {
-        // Populate book details
-        $('#detailBookTitle').text(book.title);
-        $('#detailBookAuthor').text(book.author);
-        $('#detailBookPrice').text('$' + book.price.toFixed(2));
-        $('#detailBookCondition').text(book.condition);
-        $('#detailBookType').text(book.format);
-        $('#detailBookDescription').text(book.description || 'No description available.');
-        $('#detailBookBarcode').text(book.barcode);
-        $('#detailBookStock').text(book.stock_quantity);
-        $('#detailBookLendable').text(book.is_lendable ? 'Yes' : 'No');
-        $('#detailBookAdded').text(new Date(book.created_at).toLocaleDateString());
-        
-        // Set condition badge color
-        if (book.condition === 'New') {
-          $('#detailBookCondition').removeClass('bg-yellow-100 text-yellow-800').addClass('bg-green-100 text-green-800');
-        } else {
-          $('#detailBookCondition').removeClass('bg-green-100 text-green-800').addClass('bg-yellow-100 text-yellow-800');
-        }
-        
-        // Set type badge color
-        if (book.format === 'Physical') {
-          $('#detailBookType').removeClass('bg-purple-100 text-purple-800').addClass('bg-blue-100 text-blue-800');
-        } else {
-          $('#detailBookType').removeClass('bg-blue-100 text-blue-800').addClass('bg-purple-100 text-purple-800');
-        }
+// Add this to your existing JavaScript code
 
-        // Set book image
-        if (book.image_url) {
-          $('#detailBookCover').attr('src', book.image_url);
-        } else {
-          $('#detailBookCover').attr('src', '/api/placeholder/400/600');
-        }
+// Function to load book details including reviews
+function  showBookDetail(bookId) {
+  fetch(`/books?id=${bookId}`)
+    .then(response => response.json())
+    .then(book => {
+      // Set book details
+      document.getElementById('detailBookTitle').textContent = book.title;
+      document.getElementById('detailBookAuthor').textContent = book.author;
+      document.getElementById('detailBookPrice').textContent = `R${book.price.toFixed(2)}`;
+      document.getElementById('detailBookCondition').textContent = book.condition;
+      document.getElementById('detailBookType').textContent = book.format;
+      document.getElementById('detailBookDescription').textContent = book.description;
+      document.getElementById('detailBookBarcode').textContent = book.barcode;
+      document.getElementById('detailBookStock').textContent = book.stock_quantity;
+      document.getElementById('detailBookAdded').textContent = new Date(book.created_at).toLocaleDateString();
+      document.getElementById('detailBookCover').src = book.image_url;
+      
+      // Store book ID for review submission
+      document.getElementById('writeReviewBtn').setAttribute('data-book-id', book.id);
+      
+      // Check if user can review and update the review button
+      if (book.can_review) {
+        document.getElementById('writeReviewBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+        document.getElementById('writeReviewBtn').disabled = false;
+      } else {
+        document.getElementById('writeReviewBtn').classList.add('opacity-50', 'cursor-not-allowed');
+        document.getElementById('writeReviewBtn').disabled = true;
+        document.getElementById('writeReviewBtn').title = "You can only review books you've purchased";
+      }
+      
+      // Load reviews
+      loadBookReviews(book.reviews);
+      
+      // Show book detail view
+      document.getElementById('bookGrid').classList.add('hidden');
+      document.getElementById('bookDetail').classList.remove('hidden');
+    })
+    .catch(error => console.error('Error loading book details:', error));
+}
 
-        // Set book ID for the "Add to Cart" button
-        $('#detailAddToCart').data('book-id', book.id);
-        
-        // Hide grid and show detail
-        $('#bookGrid').addClass('hidden');
-        $('#bookDetail').removeClass('hidden');
-      });
+// Function to load book reviews
+function loadBookReviews(reviews) {
+  const reviewsContainer = document.getElementById('reviewsContainer');
+  reviewsContainer.innerHTML = ''; // Clear existing reviews
+  
+  if (reviews.length === 0) {
+    reviewsContainer.innerHTML = '<p class="text-gray-500">No reviews yet. Be the first to leave a review!</p>';
+    return;
   }
+  
+  reviews.forEach(review => {
+    // Create star rating HTML
+    let starsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+      if (i <= review.rating) {
+        starsHtml += '<i class="fas fa-star"></i>';
+      } else {
+        starsHtml += '<i class="far fa-star"></i>';
+      }
+    }
+    
+    // Format date
+    const reviewDate = new Date(review.created_at).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    // Create review HTML
+    const reviewElement = document.createElement('div');
+    reviewElement.className = 'bg-gray-50 p-4 rounded-md';
+    reviewElement.innerHTML = `
+      <div class="flex items-center mb-2">
+        <div class="flex text-yellow-400">
+          ${starsHtml}
+        </div>
+        <span class="ml-2 text-sm font-medium text-gray-600">${review.rating}/5</span>
+      </div>
+      <h4 class="font-medium">${review.title}</h4>
+      <p class="text-gray-600 text-sm mt-1">${review.content}</p>
+      <p class="text-gray-500 text-xs mt-2">${review.user} - ${reviewDate}</p>
+    `;
+    
+    reviewsContainer.appendChild(reviewElement);
+  });
+}
+
+// Modify the review submission code
+submitReview.addEventListener('click', () => {
+  const title = document.getElementById('reviewTitle').value.trim();
+  const content = document.getElementById('reviewContent').value.trim();
+  const bookId = document.getElementById('writeReviewBtn').getAttribute('data-book-id');
+
+  if (currentRating === 0) {
+    alert('Please select a rating');
+    return;
+  }
+
+  if (title === '' || content === '') {
+    alert('Please fill in all fields');
+    return;
+  }
+
+  // Send review to server
+  fetch('/books', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      review: {
+        book_id: bookId,
+        rating: currentRating,
+        title: title,
+        content: content
+      }
+    })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      // Reload book details to update reviews
+      showBookDetail(bookId);
+      // Close the modal and reset form
+      closeModal();
+    } else {
+      alert(data.message || 'Could not submit review');
+    }
+  })
+  .catch(error => {
+    console.error('Error submitting review:', error);
+    alert('Error submitting review. Please try again.');
+  });
+});
+
+// Make sure to call loadBookDetails when a book is clicked
+// This depends on how you're handling book clicks in your existing code
+// For example:
+document.querySelectorAll('.book-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const bookId = card.getAttribute('data-book-id');
+    showBookDetail(bookId);
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize the wishlist from localStorage
+  let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+  
+  // Add click event to header wishlist icon
+  const headerWishlistIcon = document.querySelector('.wishlist-icon');
+  if (headerWishlistIcon) {
+    headerWishlistIcon.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      showWishlistPage();
+    });
+  }
+  
+  // Update wishlist count in header on page load
+  updateWishlistCount();
+  
+  // Update wishlist icons on page load to show correct state
+  updateWishlistIcons();
+  
+  // Global function to toggle wishlist items
+  window.toggleWishlist = function(bookId, bookTitle, bookPrice,imageUrl, event) {
+    // Prevent the click from bubbling up to the parent elements
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    const index = wishlist.findIndex(item => item.id === bookId);
+    
+    if (index === -1) {
+      // Add to wishlist
+      wishlist.push({
+        id: bookId,
+        title: bookTitle,
+        price: bookPrice,
+        image_url: imageUrl || '/api/placeholder/300/400'
+      });
+      showNotification(`${bookTitle} added to wishlist!`);
+    } else {
+      // Remove from wishlist
+      wishlist.splice(index, 1);
+      showNotification(`${bookTitle} removed from wishlist!`);
+      
+      // If we're on the wishlist page, refresh it
+      const wishlistPage = document.getElementById('wishlistPage');
+      if (wishlistPage && !wishlistPage.classList.contains('hidden')) {
+        showWishlistPage();
+      }
+    }
+    
+    // Update localStorage and UI
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    updateWishlistIcons();
+    updateWishlistCount();
+    
+    // Sync with Flask session
+    syncWishlistCountWithSession();
+  };
+  
+  function updateWishlistIcons() {
+    // First reset all icons to gray (not in wishlist)
+    const allHeartIcons = document.querySelectorAll('.wishlist-btn .fa-heart');
+    allHeartIcons.forEach(icon => {
+      icon.classList.remove('text-red-500');
+      icon.classList.add('text-gray-400');
+    });
+    
+    // Then update icons for items that are in wishlist
+    wishlist.forEach(item => {
+      const heartIcons = document.querySelectorAll(`.wishlist-icon-${item.id}`);
+      heartIcons.forEach(icon => {
+        icon.classList.remove('text-gray-400');
+        icon.classList.add('text-red-500');
+      });
+    });
+  }
+  
+  function updateWishlistCount() {
+    const wishlistCountElement = document.getElementById('wishlist-count');
+    if (wishlistCountElement) {
+      wishlistCountElement.textContent = wishlist.length;
+    }
+  }
+  
+  // Function to show the wishlist page with all saved books
+  function showWishlistPage() {
+    // Hide the book grid
+    document.getElementById('bookGrid').classList.add('hidden');
+    
+    // Check if wishlist page already exists
+    let wishlistPage = document.getElementById('wishlistPage');
+    if (!wishlistPage) {
+      // Create wishlist page
+      wishlistPage = document.createElement('div');
+      wishlistPage.id = 'wishlistPage';
+      wishlistPage.className = 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8';
+      document.getElementById('bookGrid').parentNode.appendChild(wishlistPage);
+    }
+    
+    // Populate wishlist page
+    wishlistPage.innerHTML = `
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">My Wishlist</h2>
+        <button id="backToBooks" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Back to Books
+        </button>
+      </div>
+      ${wishlist.length === 0 ? 
+        `<div class="text-center py-12">
+          <i class="fas fa-heart text-gray-300 text-6xl mb-4"></i>
+          <p class="text-xl text-gray-500">Your wishlist is empty</p>
+          <button id="exploreBooks" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Explore Books
+          </button>
+        </div>` :
+        `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          ${wishlist.map(item => `
+            <div class="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300">
+              <div class="relative pb-1/2">
+                 <img src="${item.image_url || '/api/placeholder/300/400'}" alt="${item.title} cover" class="h-64 w-full object-cover">
+                <button
+                  class="wishlist-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white bg-opacity-70 flex items-center justify-center shadow hover:bg-opacity-100 transition-all duration-200"
+                  onclick="event.stopPropagation(); toggleWishlist('${item.id}', '${item.title}', '${item.price}', event)">
+                  <i class="fas fa-heart wishlist-icon-${item.id} text-red-500"></i>
+                </button>
+              </div>
+              <div class="p-4">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-lg font-semibold text-gray-900">${item.title}</h3>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                  <p class="text-lg font-medium text-gray-900">R${parseFloat(item.price).toFixed(2)}</p>
+                  <div class="flex space-x-2">
+                    <button
+                      class="add-to-cart inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      onclick="event.stopPropagation(); addToCart('${item.id}', '${item.title}', '${item.price}')">
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>`
+      }
+    `;
+    
+    wishlistPage.classList.remove('hidden');
+    
+    // Add event listeners for wishlist page buttons
+    document.getElementById('backToBooks').addEventListener('click', function() {
+      document.getElementById('bookGrid').classList.remove('hidden');
+      wishlistPage.classList.add('hidden');
+    });
+    
+    if (wishlist.length === 0) {
+      document.getElementById('exploreBooks').addEventListener('click', function() {
+        document.getElementById('bookGrid').classList.remove('hidden');
+        wishlistPage.classList.add('hidden');
+      });
+    }
+  }
+  
+  // Function to sync wishlist count with Flask session
+  function syncWishlistCountWithSession() {
+    const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    
+    // Send the count to the server to update the session
+    fetch('/sync_wishlist_count', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCsrfToken() // Include this if you're using CSRF protection
+      },
+      body: JSON.stringify({
+        count: wishlist.length
+      })
+    });
+  }
+  
+  // Helper function to get CSRF token from cookies (if using Flask with CSRF protection)
+  function getCsrfToken() {
+    const name = "csrf_token=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookieArray = decodedCookie.split(';');
+    for(let i = 0; i < cookieArray.length; i++) {
+      let cookie = cookieArray[i].trim();
+      if (cookie.indexOf(name) === 0) {
+        return cookie.substring(name.length, cookie.length);
+      }
+    }
+    return "";
+  }
+  
+  // Call the sync function when the page loads
+  syncWishlistCountWithSession();
+  
+  // Create a simple notification system
+  window.showNotification = function(message) {
+    // Check if notification container exists
+    let notificationContainer = document.getElementById('notification-container');
+    if (!notificationContainer) {
+      notificationContainer = document.createElement('div');
+      notificationContainer.id = 'notification-container';
+      notificationContainer.className = 'fixed top-16 right-4 z-50';
+      document.body.appendChild(notificationContainer);
+    }
+    
+    // Create notification
+    const notification = document.createElement('div');
+    notification.className = 'bg-gray-800 text-white px-4 py-2 rounded shadow-lg mb-3 transform transition-all duration-500 translate-x-full opacity-0';
+    notification.textContent = message;
+    
+    // Add to container
+    notificationContainer.appendChild(notification);
+    
+    // Trigger animation
+    setTimeout(() => {
+      notification.classList.remove('translate-x-full', 'opacity-0');
+    }, 10);
+    
+    // Remove after delay
+    setTimeout(() => {
+      notification.classList.add('translate-x-full', 'opacity-0');
+      setTimeout(() => {
+        notification.remove();
+      }, 500);
+    }, 3000);
+  };
+});
 </script>
 {% endblock %}

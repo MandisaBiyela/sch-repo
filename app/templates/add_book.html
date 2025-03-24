@@ -5,17 +5,42 @@
   <section id="add-book">
     <h2 class="text-2xl font-bold mb-6">Add New Book</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
-        <form method="POST" action="{{ url_for('admin.add_book') }}" enctype="multipart/form-data">
-
+        <form method="POST" action="{{ url_for('admin.add_book') }}" enctype="multipart/form-data" id="add-book-form">
+            <!-- Hidden input for condition when PDF is selected -->
+            <input type="hidden" id="hidden_condition" name="condition" value="">
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label class="block text-gray-700 font-medium mb-2" for="barcode">
-                        Barcode <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="barcode" name="barcode" required
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <body class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2" for="barcode">
+                            Barcode <span class="text-red-500">*</span>
+                        </label>
+                        <div class="flex items-center border rounded-lg">
+                            <input type="text" id="barcode" name="barcode" required
+                                class="w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="scan-btn" class="p-2 bg-blue-500 text-white rounded-r-lg">
+                                <i class="fas fa-barcode"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+            
+                <!-- Modal for scanner -->
+                <div id="scanner-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center">
+                    <div class="bg-white rounded-lg w-full max-w-lg mx-4 relative">
+                        <button id="close-scanner" class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-4">Scan Barcode</h3>
+                            <div id="scanner-target" class="w-full h-64 bg-gray-100 overflow-hidden relative"></div>
+                        </div>
+                    </div>
+                </div>
+            
+            
+
                 <div>
                     <label class="block text-gray-700 font-medium mb-2" for="title">
                         Title <span class="text-red-500">*</span>
@@ -41,7 +66,7 @@
                     <label class="block text-gray-700 font-medium mb-2" for="format">
                         Format <span class="text-red-500">*</span>
                     </label>
-                    <select id="format" name="format" required
+                    <select id="format" name="format" required onchange="handleFormatChange()"
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Select format</option>
                         <option value="PDF">PDF</option>
@@ -49,10 +74,10 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-gray-700 font-medium mb-2" for="condition">
+                    <label class="block text-gray-700 font-medium mb-2" for="visible_condition">
                         Condition <span class="text-red-500">*</span>
                     </label>
-                    <select id="condition" name="condition" required
+                    <select id="visible_condition" onchange="updateCondition()"
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Select condition</option>
                         <option value="New">New</option>
@@ -72,8 +97,38 @@
                 <label class="block text-gray-700 font-medium mb-2" for="description">
                     Description
                 </label>
-                <textarea id="description" name="description" rows="4"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                <div class="flex flex-col space-y-2">
+                    <textarea id="description" name="description" rows="4"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    <div class="flex justify-end">
+                        <button type="button" id="generate-description-btn"
+                            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center">
+                            <i class="fas fa-magic mr-2"></i> Generate Description
+                        </button>
+                    </div>
+                    <div id="description-status" class="text-sm hidden"></div>
+                </div>
+            </div>
+
+            <!-- PDF Upload Section - Hidden by Default -->
+            <div id="pdf-upload-section" class="mb-6 hidden">
+                <label class="block text-gray-700 font-medium mb-2" for="pdf_file">
+                    PDF File <span class="text-red-500">*</span>
+                </label>
+                <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                    <div class="w-full">
+                        <label class="block w-full px-4 py-2 bg-blue-500 text-white rounded-lg text-center cursor-pointer hover:bg-blue-600">
+                            <i class="fas fa-file-pdf mr-2"></i> Upload PDF
+                            <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" class="hidden">
+                        </label>
+                        <p class="text-sm text-gray-500 mt-2" id="pdf-file-name">
+                            No file selected
+                        </p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            Maximum file size: 50MB
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <div class="mb-6">
@@ -107,7 +162,8 @@
 
             <div class="flex justify-end space-x-4 mt-6">
                 <button type="button"
-                    class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                    onclick="window.location.href='{{ url_for('admin.books') }}'">
                     Cancel
                 </button>
                 <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -117,7 +173,7 @@
         </form>
     </div>
   </section>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
   <script>
     function previewImage(input) {
       const preview = document.getElementById('preview-image');
@@ -135,5 +191,210 @@
         reader.readAsDataURL(input.files[0]);
       }
     }
+
+    // Update the hidden condition field when the visible one changes
+    function updateCondition() {
+      const visibleCondition = document.getElementById('visible_condition');
+      const hiddenCondition = document.getElementById('hidden_condition');
+      hiddenCondition.value = visibleCondition.value;
+    }
+
+    // Function to handle format change and update condition + PDF upload section
+    function handleFormatChange() {
+      const formatSelect = document.getElementById('format');
+      const visibleCondition = document.getElementById('visible_condition');
+      const hiddenCondition = document.getElementById('hidden_condition');
+      const pdfUploadSection = document.getElementById('pdf-upload-section');
+      const pdfFile = document.getElementById('pdf_file');
+      
+      if (formatSelect.value === 'PDF') {
+        // Show PDF upload section
+        pdfUploadSection.classList.remove('hidden');
+        
+        // Set condition to New and disable the dropdown
+        visibleCondition.value = 'New';
+        visibleCondition.disabled = true;
+        visibleCondition.classList.add('bg-gray-100');
+        
+        // Update hidden field
+        hiddenCondition.value = 'New';
+        
+        // Make the PDF file required
+        pdfFile.required = true;
+        // Make sure the input is not disabled
+        pdfFile.disabled = false;
+      } else {
+        // Hide PDF upload section
+        pdfUploadSection.classList.add('hidden');
+        
+        // Enable the condition dropdown
+        visibleCondition.disabled = false;
+        visibleCondition.classList.remove('bg-gray-100');
+        
+        // Update hidden field with visible selection
+        hiddenCondition.value = visibleCondition.value;
+        
+        // Make the PDF file not required
+        pdfFile.required = false;
+        pdfFile.disabled = true;
+      }
+    }
+
+    // Display selected PDF file name
+    document.getElementById('pdf_file').addEventListener('change', function() {
+      const fileNameElement = document.getElementById('pdf-file-name');
+      if (this.files && this.files[0]) {
+        fileNameElement.textContent = this.files[0].name;
+        console.log("PDF file selected:", this.files[0].name); // Debug info
+      } else {
+        fileNameElement.textContent = 'No file selected';
+        console.log("No PDF file selected"); // Debug info
+      }
+    });
+
+    // Function to generate book description using Gemini AI
+    document.getElementById('generate-description-btn').addEventListener('click', function() {
+      // Get title and author values
+      const title = document.getElementById('title').value;
+      const author = document.getElementById('author').value;
+      const descriptionField = document.getElementById('description');
+      const statusElement = document.getElementById('description-status');
+      
+      // Validate inputs
+      if (!title || !author) {
+        statusElement.textContent = 'Please enter both title and author first.';
+        statusElement.classList.remove('hidden', 'text-green-500', 'text-blue-500');
+        statusElement.classList.add('text-red-500');
+        return;
+      }
+      
+      // Show loading status
+      statusElement.textContent = 'Generating description...';
+      statusElement.classList.remove('hidden', 'text-red-500', 'text-green-500');
+      statusElement.classList.add('text-blue-500');
+      
+      // Disable the button during API call
+      this.disabled = true;
+      this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating...';
+      
+      // Make API call to generate description
+      fetch('{{ url_for("admin.generate_description_api") }}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, author }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.description) {
+          // Update description field with generated text
+          descriptionField.value = data.description;
+          
+          // Show success message
+          statusElement.textContent = 'Description generated successfully!';
+          statusElement.classList.remove('text-blue-500', 'text-red-500');
+          statusElement.classList.add('text-green-500');
+          
+          // Auto hide the status message after 3 seconds
+          setTimeout(() => {
+            statusElement.classList.add('hidden');
+          }, 3000);
+        } else {
+          throw new Error('No description returned');
+        }
+      })
+      .catch(error => {
+        console.error('Error generating description:', error);
+        
+        // Show error message
+        statusElement.textContent = 'Failed to generate description. Please try again.';
+        statusElement.classList.remove('text-blue-500', 'text-green-500');
+        statusElement.classList.add('text-red-500');
+      })
+      .finally(() => {
+        // Re-enable the button
+        this.disabled = false;
+        this.innerHTML = '<i class="fas fa-magic mr-2"></i> Generate Description';
+      });
+    });
+
+    // Initialize form state on page load
+    window.addEventListener('DOMContentLoaded', function() {
+      const formatSelect = document.getElementById('format');
+      const visibleCondition = document.getElementById('visible_condition');
+      const hiddenCondition = document.getElementById('hidden_condition');
+      const pdfFile = document.getElementById('pdf_file');
+      
+      // Set initial value for hidden condition field
+      hiddenCondition.value = visibleCondition.value;
+      
+      // Initialize format-dependent fields
+      if (formatSelect.value === 'PDF') {
+        pdfFile.required = true;
+        document.getElementById('pdf-upload-section').classList.remove('hidden');
+      }
+      
+      handleFormatChange();
+    });
+
+    // Add validation before form submission
+    document.getElementById('add-book-form').addEventListener('submit', function(event) {
+      const formatSelect = document.getElementById('format');
+      const hiddenCondition = document.getElementById('hidden_condition');
+      const pdfFile = document.getElementById('pdf_file');
+      
+      // Ensure condition is set
+      if (hiddenCondition.value === '') {
+        alert('Please select a condition');
+        event.preventDefault();
+        return;
+      }
+      
+      // If PDF format is selected, ensure PDF file is uploaded
+      if (formatSelect.value === 'PDF') {
+        console.log("Checking PDF file before submit:", pdfFile.files);
+        
+        if (!pdfFile.files || !pdfFile.files[0]) {
+          alert('Please upload a PDF file');
+          // Show the upload section in case it's hidden
+          document.getElementById('pdf-upload-section').classList.remove('hidden');
+          event.preventDefault();
+          return;
+        }
+        
+        // Additional check for file type
+        const fileName = pdfFile.files[0].name;
+        if (!fileName.toLowerCase().endsWith('.pdf')) {
+          alert('Please upload a valid PDF file');
+          event.preventDefault();
+          return;
+        }
+      }
+    });
+
+  
+    document.getElementById("scan-btn").addEventListener("click", async () => {
+      const video = document.getElementById("video");
+      video.style.display = "block";
+      
+      const codeReader = new ZXing.BrowserBarcodeReader();
+      try {
+          const result = await codeReader.decodeFromVideoDevice(undefined, video, (result, err) => {
+              if (result) {
+                  document.getElementById("barcode").value = result.text;
+                  video.style.display = "none";
+                  codeReader.reset();
+              }
+          });
+      } catch (error) {
+          console.error("Error scanning barcode:", error);
+      }
+  });
   </script>
 {% endblock %}

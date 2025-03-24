@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin: 0;
+        }
+        .content {
+            padding: 10px 0;
+        }
+        .order-details {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .product-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .product-row img {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+        .product-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .total {
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: right;
+        }
+        .shipping-info {
+            padding: 10px;
+            background-color: #e8f4f8;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .download-link {
+            padding: 10px;
+            background-color: #f0f8e6;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .download-link a {
+            color: #2c3e50;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Thank You for Your Purchase!</h1>
+        </div>
+        <div class="content">
+            <p>Hello {{ user_name }},</p>
+            <p>We're excited to confirm your recent purchase. Here's a summary of your order:</p>
+            
+            <div class="order-details">
+                <h3>Order Summary</h3>
+                {% for item in order_items %}
+                <div class="product-row">
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}">
+                    <div class="product-info">
+                        <span>{{ item.title }} by {{ item.author }}</span>
+                        <span> R{{ item.price }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="total">
+                    <p>Total: R{{ order_total }}</p>
+                </div>
+            </div>
+            
+            {% if has_physical_books %}
+            {% if delivery_method == "Store Pickup" %}
+            <div class="shipping-info">
+                <h3>Store Pickup Information</h3>
+                <p>Your order is ready for pickup at the DUT Library. Please come to the library between 9 AM and 5 PM and bring your email confirmation with you.</p>
+            </div>
+            {% else %}
+            <div class="shipping-info">
+                <h3>Shipping Information</h3>
+                <p>Your physical book(s) will be shipped to:</p>
+                <p>{{ shipping_address }}</p>
+                <p>Estimated delivery date: {{ delivery_date }}</p>
+            </div>
+            {% endif %}
+        {% endif %}
+            
+            {% if has_pdf_books %}
+            <div class="download-link">
+                <h3>Your Digital Downloads</h3>
+                <p>You can download your PDF book(s) using the links below:</p>
+                {% for pdf in pdf_books %}
+                <p><a href="{{ pdf.download_link }}">{{ pdf.title }}</a></p>
+                {% endfor %}
+                <p>Downloads will be available for 30 days from purchase.</p>
+            </div>
+            {% endif %}
+            
+            <p>If you have any questions about your order, please don't hesitate to contact our customer support team.</p>
+            <p>Best regards,<br>The Book Store Team</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,7 +1,10 @@
 pip install Flask
-pip install Flask-Login==0.5.0
-pip install Flask-SQLAlchemy==2.5.1
-pip install Werkzeug==2.1.1
+pip install Flask-Login
+pip install Flask-SQLAlchemy
+pip install Werkzeug
 pip install python-dotenv
 pip install Flask-Migrate
 pip install google-cloud-storage
+pip install Flask-Mail
+pip install google-generativeai
+pip install twilio

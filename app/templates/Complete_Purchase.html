@@ -3,167 +3,448 @@
 {% block title %}Checkout{% endblock %}
 
 {% block content %}
-  <!-- Page Title -->
-  <div class="text-center mb-8">
-    <h2 class="text-3xl font-bold text-gray-800">Complete Your Purchase</h2>
-    <p class="text-gray-600 mt-2">Review your items and finish checking out</p>
-  </div>
-
-  <!-- Main Content -->
-  <div class="flex flex-col lg:flex-row gap-8">
-
-    <!-- Order Summary -->
-    <div class="lg:w-1/3 bg-white rounded-lg shadow-md p-6">
-      <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Order Summary</h3>
-      
-      <div class="space-y-4 mb-4">
-        {% for book_id, item in cart.items() %}
-          <div class="flex justify-between items-start">
-            <div>
-              <h4 class="font-medium text-gray-800">{{ item.title }}</h4>
-              <p class="text-sm text-gray-500">by {{ item.author }}</p>
-              <p class="text-sm text-gray-500">Quantity: {{ item.quantity }}</p>
-            </div>
-            <span class="font-medium">R{{ "%.2f"|format(item.price * item.quantity) }}</span>
-          </div>
-        {% else %}
-          <p class="text-center text-gray-500">Your cart is empty.</p>
-        {% endfor %}
-      </div>
-
-      <div class="border-t pt-4 text-gray-600">
-        <div class="flex justify-between">
-          <span>Subtotal</span>
-          <span>R{{ "%.2f"|format(total) }}</span>
-        </div>
-      </div>
-
-      <div class="border-t mt-4 pt-4 font-bold text-lg flex justify-between">
-        <span>Total</span>
-        <span>R{{ "%.2f"|format(total) }}</span>
-      </div>
-    </div>
-
-    
-    <!-- Shipping & Payment -->
-<div class="lg:w-2/3">
-  <form method="POST" action="{{ url_for('main.complete_purchase') }}">
-    <!-- Shipping Information -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Shipping Information</h3>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-          <input type="text" id="firstName" name="firstName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-        </div>
-        
-        <div>
-          <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-          <input type="text" id="lastName" name="lastName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-        </div>
-      </div>
-      
-      <div>
-        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-        <input type="email" id="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-      </div>
-      
-      <div>
-        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-        <input type="tel" id="phone" name="phone" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-      </div>
-      
-      <div>
-        <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
-        <input type="text" id="address" name="address" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-      </div>
-      
-      <div>
-        <label for="address2" class="block text-sm font-medium text-gray-700 mb-1">Apartment, suite, etc. (optional)</label>
-        <input type="text" id="address2" name="address2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
-          <input type="text" id="city" name="city" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-        </div>
-        
-        <div>
-          <label for="state" class="block text-sm font-medium text-gray-700 mb-1">Province</label>
-          <select id="state" name="state" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-            <option value="">Select Province</option>
-            <option value="EC">Eastern Cape</option>
-            <option value="FS">Free State</option>
-            <option value="GP">Gauteng</option>
-            <option value="KZN">KwaZulu-Natal</option>
-            <option value="LP">Limpopo</option>
-            <option value="MP">Mpumalanga</option>
-            <option value="NC">Northern Cape</option>
-            <option value="NW">North West</option>
-            <option value="WC">Western Cape</option>
-          </select>
-        </div>
-        
-        <div>
-          <label for="zip" class="block text-sm font-medium text-gray-700 mb-1">ZIP / Postal Code</label>
-          <input type="text" id="zip" name="zip" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-        </div>
-      </div>
-    </div>
-
-    <!-- Payment Information -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Payment Information</h3>
-      
-      <div class="space-y-4">
-        <div>
-          <label for="cardName" class="block text-sm font-medium text-gray-700 mb-1">Name on Card</label>
-          <input type="text" id="cardName" name="cardName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-        </div>
-        
-        <div>
-          <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
-          <div class="relative">
-            <input type="text" id="cardNumber" name="cardNumber" placeholder="XXXX XXXX XXXX XXXX" class="w-full px-3 py-2 pl-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-            <div class="absolute inset-y-0 right-3 flex items-center">
-            </div>
-          </div>
-        </div>
-        
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label for="expDate" class="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
-            <input type="text" id="expDate" name="expDate" placeholder="MM/YY" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-          </div>
-          
-          <div>
-            <label for="cvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
-            <input type="text" id="cvv" name="cvv" placeholder="123" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-          </div>
-        </div>
-        
-        <div>
-          <label class="inline-flex items-center">
-            <input type="checkbox" class="rounded text-blue-600">
-            <span class="ml-2 text-gray-700">Save this card for future purchases</span>
-          </label>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Complete Purchase -->
-    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-300">
-      Complete Purchase (R{{ "%.2f"|format(total) }})
-    </button>
-      
-    <p class="text-sm text-gray-600 text-center mt-4">
-      By completing your purchase, you agree to our 
-      <a href="#" class="text-blue-600 hover:underline">Terms of Service</a> and 
-      <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a>
-    </p>
-  </form>
+<!-- Page Title -->
+<div class="text-center mb-8">
+  <h2 class="text-3xl font-bold text-gray-800">Complete Your Purchase</h2>
+  <p class="text-gray-600 mt-2">Review your items and finish checking out</p>
 </div>
+
+<!-- Main Content -->
+<div class="flex flex-col lg:flex-row gap-8">
+
+  <!-- Order Summary -->
+<div class="lg:w-1/3 bg-white rounded-lg shadow-md p-6">
+  <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Order Summary</h3>
+  {% set has_physical_book = has_physical_book %}
+
+  <div class="space-y-4 mb-4">
+    {% for book_id, item in cart.items() %}
+    <div class="flex justify-between items-start">
+      <!-- Book Image -->
+      <div class="flex items-start">
+        <img src="{{ item.image_url }}" alt="{{ item.title }} cover" class="w-16 h-24 rounded-md border border-gray-200 object-cover mr-4">
+        <div>
+          <h4 class="font-medium text-gray-800">{{ item.title }}</h4>
+          <p class="text-sm text-gray-500">by {{ item.author }}</p>
+          <p class="text-sm text-gray-500">Format: {{ item.format }}</p> 
+          <p class="text-sm text-gray-500">Quantity: {{ item.quantity }}</p>
+        </div>
+      </div>
+      <span class="font-medium">R{{ "%.2f"|format(item.price * item.quantity) }}</span>
+    </div>
+    {% else %}
+    <p class="text-center text-gray-500">Your cart is empty.</p>
+    {% endfor %}
   </div>
+  
+  <!-- Delivery Options Section -->
+ <!-- Delivery Options Section -->
+{% if has_physical_book and cart|length > 0 %}
+<div class="border-t pt-4 pb-4">
+  <h4 class="font-medium text-gray-800 mb-2">Delivery Options</h4>
+  <div class="space-y-2">
+    <label class="flex items-center">
+      <input type="radio" name="shipping_option" value="delivery" class="mr-2" {% if has_physical_book %}checked{% endif %}>
+      <span class="text-gray-700">Delivery (R50.00)</span>
+    </label>
+    <label class="flex items-center">
+      <input type="radio" name="shipping_option" value="pickup" class="mr-2" {% if not has_physical_book %}checked{% endif %}>
+      <span class="text-gray-700">Store Pickup (Free)</span>
+    </label>
+  </div>
+</div>
+{% endif %}
+
+  <div class="border-t pt-4 text-gray-600">
+    <div class="flex justify-between">
+      <span>Subtotal</span>
+      <span>R{{ "%.2f"|format(total) }}</span>
+    </div>
+    
+    {% if has_physical_book and cart|length > 0 %}
+    <div class="flex justify-between mt-2">
+      <span>Delivery Fee</span>
+      <span id="delivery_fee">R50.00</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="border-t mt-4 pt-4 font-bold text-lg flex justify-between">
+    <span>Total</span>
+    <span id="final_total">R{{ "%.2f"|format(total + (50 if has_physical_book and cart|length > 0 else 0)) }}</span>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const deliveryOptions = document.querySelectorAll('input[name="delivery_option"]');
+    const deliveryFeeElement = document.getElementById('delivery_fee');
+    const finalTotalElement = document.getElementById('final_total');
+    const subtotal = {{ total }};
+    
+    deliveryOptions.forEach(function(option) {
+      option.addEventListener('change', function() {
+        const isDelivery = this.value === 'delivery';
+        const deliveryFee = isDelivery ? 50 : 0;
+        
+        deliveryFeeElement.textContent = 'R' + deliveryFee.toFixed(2);
+        finalTotalElement.textContent = 'R' + (subtotal + deliveryFee).toFixed(2);
+      });
+    });
+  });
+</script>
+
+
+  <!-- Shipping & Payment -->
+  <div class="lg:w-2/3">
+    <form method="POST" action="{{ url_for('main.complete_purchase') }}">
+      <!-- Hidden input to store the selected shipping option -->
+      <input type="hidden" id="selected_shipping_option" name="shipping_option" value="delivery">
+      
+      <!-- Shipping Information - Only show if there's a physical book -->
+      {% if has_physical_book %}
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Shipping Information</h3>
+      
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Name fields -->
+          <div>
+            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+            <input type="text" id="firstName" name="firstName" value="{{ user.first_name }}"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+          </div>
+      
+          <div>
+            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+            <input type="text" id="lastName" name="lastName" value="{{ user.last_name }}"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+          </div>
+      
+          <!-- Contact info -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+          </div>
+      
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input type="tel" id="phone" name="phone"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+          </div>
+        </div>
+      
+        <!-- Address fields - full width -->
+        <div class="mt-4">
+          <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
+          <input type="text" id="address" name="address"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+      
+        <div class="mt-4">
+          <label for="address2" class="block text-sm font-medium text-gray-700 mb-1">Apartment, suite, etc. (optional)</label>
+          <input type="text" id="address2" name="address2"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+      
+        <!-- City, Province, ZIP in a separate row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div>
+            <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+            <input type="text" id="city" name="city"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+          </div>
+      
+          <div>
+            <label for="state" class="block text-sm font-medium text-gray-700 mb-1">Province</label>
+            <select id="state" name="state"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              <option value="">Select Province</option>
+              <option value="EC">Eastern Cape</option>
+              <option value="FS">Free State</option>
+              <option value="GP">Gauteng</option>
+              <option value="KZN">KwaZulu-Natal</option>
+              <option value="LP">Limpopo</option>
+              <option value="MP">Mpumalanga</option>
+              <option value="NC">Northern Cape</option>
+              <option value="NW">North West</option>
+              <option value="WC">Western Cape</option>
+            </select>
+          </div>
+      
+          <div>
+            <label for="zip" class="block text-sm font-medium text-gray-700 mb-1">ZIP / Postal Code</label>
+            <input type="text" id="zip" name="zip"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      
+      <!-- Payment Information -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Payment Information</h3>
+    
+        <div class="space-y-4">
+          <div>
+            <label for="cardName" class="block text-sm font-medium text-gray-700 mb-1">Name on Card</label>
+            <input type="text" id="cardName" name="cardName"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+          </div>
+    
+          <div>
+            <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+            <div class="relative">
+              <input type="text" id="cardNumber" name="cardNumber" placeholder="XXXX XXXX XXXX XXXX"
+                class="w-full px-3 py-2 pl-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              <div class="absolute inset-y-0 right-3 flex items-center">
+                <img id="cardIcon" src="" alt="" class="h-6 w-auto hidden">
+              </div>
+            </div>
+          </div>
+    
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="expDate" class="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
+              <input type="text" id="expDate" name="expDate" placeholder="MM/YY" maxlength="5"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+    
+            <div>
+              <label for="cvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+              <input type="text" id="cvv" name="cvv" placeholder="123"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Complete Purchase -->
+      <button type="submit" id="purchase_button"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-300">
+      Complete Purchase (R{{ "%.2f"|format(total + (50 if has_physical_book and cart|length > 0 else 0)) }})
+    </button>
+    
+      <p class="text-sm text-gray-600 text-center mt-4">
+        By completing your purchase, you agree to our
+        <a href="#" class="text-blue-600 hover:underline">Terms of Service</a> and
+        <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a>
+      </p>
+    </form>
+  </div>
+</div> 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Credit card type detection
+    const cardNumberInput = document.getElementById('cardNumber');
+    const cardIcon = document.getElementById('cardIcon');
+
+    cardNumberInput.addEventListener('input', function () {
+      const cardNumber = this.value.replace(/\s/g, '');
+
+      // Show card icon based on card number
+      if (cardNumber.startsWith('4')) {
+        // Visa card
+        cardIcon.src = "{{ url_for('static', filename='images/visa-icon.png') }}";
+        cardIcon.alt = "Visa";
+        cardIcon.classList.remove('hidden');
+      } else if (cardNumber.startsWith('5')) {
+        // MasterCard
+        cardIcon.src = "{{ url_for('static', filename='images/mastercard-icon.png') }}";
+        cardIcon.alt = "MasterCard";
+        cardIcon.classList.remove('hidden');
+      } else if (cardNumber.length > 0) {
+        // Other card type or invalid
+        cardIcon.classList.add('hidden');
+      } else {
+        // Empty input
+        cardIcon.classList.add('hidden');
+      }
+
+      // Format card number with spaces
+      const formattedNumber = cardNumber.replace(/(.{4})/g, '$1 ').trim();
+      this.value = formattedNumber;
+    });
+
+    // Expiration date formatting
+    const expDateInput = document.getElementById('expDate');
+
+    expDateInput.addEventListener('input', function (e) {
+      let value = this.value.replace(/\D/g, ''); // Remove non-digits
+
+      if (value.length > 2) {
+        // Add slash after first two digits (MM/YY)
+        this.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      } else {
+        this.value = value;
+      }
+
+      // Handle special case when user deletes the slash
+      if (this.value.length === 2 && e.inputType !== 'deleteContentBackward') {
+        this.value += '/';
+      }
+    });
+  });
+  function initAutocomplete() {
+    var autocomplete = new google.maps.places.Autocomplete(
+      document.getElementById('address'),
+      { types: ['geocode'],
+      // Restrict results to South Africa using country code 'za'
+      componentRestrictions: { country: 'za' }
+    }
+    );
+  
+    autocomplete.addListener('place_changed', function() {
+      var place = autocomplete.getPlace();
+      
+      // Clear existing values
+      document.getElementById('address').value = '';
+      document.getElementById('city').value = '';
+      document.getElementById('state').value = '';
+      document.getElementById('zip').value = '';
+      
+      // Extract Address Components
+      let streetNumber = '';
+      let streetName = '';
+      let city = '';
+      let state = '';
+      let zip = '';
+      
+      // Loop through address components and extract relevant parts
+      for (const component of place.address_components) {
+        const componentType = component.types[0];
+        
+        switch (componentType) {
+          case "street_number":
+            streetNumber = component.long_name;
+            break;
+          case "route":
+            streetName = component.long_name;
+            break;
+          case "locality":
+            city = component.long_name;
+            break;
+          case "administrative_area_level_1": 
+            // Find matching province code in your select dropdown
+            const stateCode = component.short_name;
+            // For South Africa, you may need to map from long name to your province codes
+            state = mapProvinceToCode(component.long_name);
+            break;
+          case "postal_code":
+            zip = component.long_name;
+            break;
+        }
+      }
+      
+      // Set street address (only street number and name)
+      document.getElementById('address').value = (streetNumber + ' ' + streetName).trim();
+      
+      // Fill in other fields
+      document.getElementById('city').value = city;
+      
+      // Set the select dropdown for province
+      if (state) {
+        document.getElementById('state').value = state;
+      }
+      
+      document.getElementById('zip').value = zip;
+    });
+  }
+  
+  // Helper function to map South African province names to codes
+  function mapProvinceToCode(provinceName) {
+    const provinceMap = {
+      'Eastern Cape': 'EC',
+      'Free State': 'FS',
+      'Gauteng': 'GP',
+      'KwaZulu-Natal': 'KZN',
+      'Limpopo': 'LP',
+      'Mpumalanga': 'MP',
+      'Northern Cape': 'NC',
+      'North West': 'NW',
+      'Western Cape': 'WC'
+    };
+    
+    // Try to match the province name (case insensitive)
+    for (const [name, code] of Object.entries(provinceMap)) {
+      if (provinceName.toLowerCase().includes(name.toLowerCase())) {
+        return code;
+      }
+    }
+    
+    return ''; // Return empty string if no match found
+  }
+  
+  // Load Google Maps API when window loads
+  document.addEventListener('DOMContentLoaded', function() {
+
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+    const script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initAutocomplete';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  });
+
+ document.addEventListener('DOMContentLoaded', function() {
+    const deliveryOptions = document.querySelectorAll('input[name="shipping_option"]');
+    const selectedShippingOption = document.getElementById('selected_shipping_option');
+    const deliveryFeeElement = document.getElementById('delivery_fee');
+    const finalTotalElement = document.getElementById('final_total');
+    const purchaseButton = document.getElementById('purchase_button');
+    const shippingSection = document.querySelector('.bg-white.rounded-lg.shadow-md.p-6.mb-6');
+    const subtotal = {{ total }};
+    
+    // Disable required attributes on load based on initial selection
+    const initialOption = document.querySelector('input[name="shipping_option"]:checked').value;
+    toggleShippingFieldsRequired(initialOption === 'delivery');
+    
+    // Hide shipping section initially if pickup is selected
+    if (initialOption === 'pickup') {
+        shippingSection.style.display = 'none';
+    }
+    
+    deliveryOptions.forEach(function(option) {
+        option.addEventListener('change', function() {
+            const isDelivery = this.value === 'delivery';
+            const deliveryFee = isDelivery ? 50 : 0;
+            
+            // Update delivery fee display
+            deliveryFeeElement.textContent = 'R' + deliveryFee.toFixed(2);
+            
+            // Update final total
+            const finalTotal = subtotal + deliveryFee;
+            finalTotalElement.textContent = 'R' + finalTotal.toFixed(2);
+            
+            // Update purchase button text
+            purchaseButton.textContent = 'Complete Purchase (R' + finalTotal.toFixed(2) + ')';
+            
+            // Toggle shipping section visibility
+            shippingSection.style.display = isDelivery ? 'block' : 'none';
+            
+            // Toggle required attributes for shipping fields
+            toggleShippingFieldsRequired(isDelivery);
+            
+            // Update the hidden input field value
+            selectedShippingOption.value = this.value;
+        });
+    });
+    
+    // Function to toggle required attribute on shipping fields
+    function toggleShippingFieldsRequired(isRequired) {
+        const shippingFields = ['address', 'city', 'state', 'zip'];
+        shippingFields.forEach(function(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                if (isRequired) {
+                    field.setAttribute('required', '');
+                } else {
+                    field.removeAttribute('required');
+                }
+            }
+        });
+    }
+});
+</script>
 {% endblock %}
