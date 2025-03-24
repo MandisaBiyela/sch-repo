@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .weather-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .weather-emoji {
+            font-size: 2em;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .current-temp {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .current-temp .high {
+            font-weight: bold;
+        }
+
+        .forecast {
+            margin-bottom: 20px;
+        }
+
+        .day {
+            margin-bottom: 10px;
+        }
+
+        .day-name {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+
+        .temp-range {
+            display: block;
+            margin-top: 5px;
+        }
+
+        .temp-range .high {
+            font-weight: bold;
+        }
+
+        .change-city {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .change-city:hover {
+            background-color: #0056b3;
+        }
+
+        .credit {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-container">
+        <div class="weather-emoji">🌤️</div>
+        <h1>Currently 21° in Tokyo</h1>
+        <div class="current-temp">
+            <span>13°</span> / <span class="high">23°</span>
+        </div>
+        <div class="forecast">
+            <div class="day">
+                <div class="day-name">🌧️Tomorrow</div>
+                <div class="temp-range">
+                    <span>10°</span> / <span class="high">22°</span>
+                </div>
+            </div>
+            <div class="day">
+                <div class="day-name">🌤️Saturday</div>
+                <div class="temp-range">
+                    <span>15°</span> / <span class="high">17°</span>
+                </div>
+            </div>
+            <div class="day">
+                <div class="day-name">☀️Sunday</div>
+                <div class="temp-range">
+                    <span>25°</span> / <span class="high">28°</span>
+                </div>
+            </div>
+        </div>
+        <button class="change-city">Change city</button>
+        <p class="credit">Coded by Mandisa Biyela</p>
+    </div>
+</body>
+</html>
